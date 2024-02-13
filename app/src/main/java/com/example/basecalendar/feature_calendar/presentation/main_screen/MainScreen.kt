@@ -2,6 +2,7 @@ package com.example.basecalendar.feature_calendar.presentation.main_screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -13,6 +14,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -42,8 +44,6 @@ fun MainScreen(
 
 
     // TODO - finish main screen
-
-    // TODO - still try to fill grid with remaining space
     Scaffold(
         topBar = {
             TopAppBar(
@@ -54,7 +54,7 @@ fun MainScreen(
                 },
                 actions = {
                     IconButton(onClick = {
-                        viewModel.setEmptyCalendar(
+                        viewModel.setFullCalendarForCurrentMonth(
                             viewModel.testState.value.currentMonth - 1
                         )
                     }) {
@@ -64,7 +64,7 @@ fun MainScreen(
                         )
                     }
                     IconButton(onClick = {
-                        viewModel.setEmptyCalendar(
+                        viewModel.setFullCalendarForCurrentMonth(
                             viewModel.testState.value.currentMonth + 1
                         )
                     }) {
@@ -77,9 +77,7 @@ fun MainScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                viewModel.addTestEvents()
-            }) {
+            FloatingActionButton(onClick = {}) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add"
@@ -107,56 +105,61 @@ fun MainScreen(
                 }
             }
             Divider(modifier = Modifier.fillMaxWidth())
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(7),
-                verticalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxHeight()
-            ) {
-                items(viewModel.testState.value.listOfDays) {
-                    if (it.isEmpty) {
-                        Text(
-                            text = "",
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier
-                                .padding(8.dp)
-                        )
-                    } else {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                        ) {
+            Box() {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(7),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxHeight()
+                ) {
+                    items(viewModel.testState.value.listOfDays) {
+                        if (it.isEmpty) {
                             Text(
-                                text = it.dayOfMonth.toString(),
+                                text = "",
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
-                                    .fillMaxWidth()
                                     .padding(8.dp)
                             )
-                            if (it.listOfEvents.isNotEmpty()) {
-                                Column {
-                                    it.listOfEvents.forEach { event ->
-                                        Text(
-                                            text = event.id.toString(),
-                                            textAlign = TextAlign.Center,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .background(Color.Red)
-                                        )
+                        } else {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                            ) {
+                                Text(
+                                    text = it.dayOfMonth.toString(),
+                                    textAlign = TextAlign.Center,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                )
+                                if (it.listOfEvents.isNotEmpty()) {
+                                    Column {
+                                        it.listOfEvents.forEach { event ->
+                                            Text(
+                                                text = event.id.toString(),
+                                                textAlign = TextAlign.Center,
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .background(Color.Red)
+                                            )
+                                        }
                                     }
-                                }
-                            } else {
-                                Column {
-                                    for(i in 1..5) {
-                                        Text(
-                                            text = "",
-                                            textAlign = TextAlign.Center,
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
+                                } else {
+                                    Column {
+                                        for(i in 1..5) {
+                                            Text(
+                                                text = "",
+                                                textAlign = TextAlign.Center,
+                                                modifier = Modifier.fillMaxWidth()
+                                            )
+                                        }
                                     }
                                 }
                             }
                         }
+                        Divider(modifier = Modifier.fillMaxWidth())
                     }
-                    Divider(modifier = Modifier.fillMaxWidth())
+                }
+                if (viewModel.testState.value.isLoading) {
+                    CircularProgressIndicator()
                 }
             }
         }
