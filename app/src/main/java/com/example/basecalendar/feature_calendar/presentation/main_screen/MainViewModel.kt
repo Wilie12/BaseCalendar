@@ -20,20 +20,22 @@ class MainViewModel @Inject constructor(
     private val repository: CalendarRepository,
     private val mainUseCases: MainUseCases
 ) : ViewModel() {
+
     // TODO - finish MainViewModel
 
-    private val _testState = mutableStateOf(TestState())
-    val testState: State<TestState> = _testState
+    private val _state = mutableStateOf(MainState())
+    val state: State<MainState> = _state
 
     init {
-        getCurrentMonthAndYear()
-        setFullCalendarForCurrentMonth(testState.value.currentMonth)
+        getCurrentDate()
+        setEmptyCalendar(state.value.selectedMonth)
+        viewModelScope.launch {
+            setFullCalendarForSelectedMonth(state.value.selectedMonth)
+        }
 //        addTestDataToDatabase()
     }
 
-    // TODO - do something useful with this
-
-    fun setFullCalendarForCurrentMonth(
+    fun setFullCalendarForSelectedMonth(
         selectedMonth: Int
     ) {
 
@@ -41,22 +43,22 @@ class MainViewModel @Inject constructor(
 
         viewModelScope.launch {
 
-            _testState.value = testState.value.copy(isLoading = true)
+            _state.value = state.value.copy(isLoading = true)
 
             getAllCalendarEventsFromCurrentMonth()
-            if (testState.value.listOfEvents.isNotEmpty()) {
+            if (state.value.listOfEvents.isNotEmpty()) {
                 addEventsToCalendar()
             }
 
-            _testState.value = testState.value.copy(isLoading = false)
+            _state.value = state.value.copy(isLoading = false)
         }
     }
     private fun addEventsToCalendar() {
 
         val c = Calendar.getInstance()
 
-        val listOfDays = testState.value.listOfDays.toMutableList()
-        val listOfEvents = testState.value.listOfEvents
+        val listOfDays = state.value.listOfDays.toMutableList()
+        val listOfEvents = state.value.listOfEvents
 
         listOfEvents.forEach { calendarEvent ->
 
@@ -74,32 +76,32 @@ class MainViewModel @Inject constructor(
                 listOfDays.indexOf(listOfDays.find { calendarDay ->
                     calendarDay.dayOfMonth == eventDay
                 })] = CalendarDay(
-                listOfEvents = listOfEventsFromCurrentDay,
+                listOfEvents = listOfEventsFromCurrentDay.sortedBy { it.startingDate },
                 isEmpty = false,
                 dayOfMonth = eventDay
             )
         }
 
-        _testState.value = testState.value.copy(
+        _state.value = state.value.copy(
             listOfDays = listOfDays.toList()
         )
     }
 
     private suspend fun getAllCalendarEventsFromCurrentMonth() {
         val firstDayOfMonth = mainUseCases.getFirstDayOfMonthInMillis(
-            testState.value.currentMonth,
-            testState.value.currentYear
+            state.value.selectedMonth,
+            state.value.selectedYear
         )
         val firstDayOfNextMonth = mainUseCases.getFirstDayOfNextMonthInMillis(
-            testState.value.currentMonth,
-            testState.value.currentYear
+            state.value.selectedMonth,
+            state.value.selectedYear
         )
 
         val listOfEvents = mainUseCases.getAllCalendarEventsFromCurrentMonth(
             firstDayOfMonth,
             firstDayOfNextMonth
         )
-        _testState.value = testState.value.copy(
+        _state.value = state.value.copy(
             listOfEvents = listOfEvents
         )
     }
@@ -110,12 +112,12 @@ class MainViewModel @Inject constructor(
             repository.insertCalendarEvent(
                 CalendarEventDto(
                     id = 0,
-                    startingDate = 1705851240000,
-                    endingDate = 1705858440000,
+                    startingDate = 1704069142000,
+                    endingDate = 1704069142000,
                     isTakingWholeDay = false,
                     isRepeating = false,
                     repeatMode = RepeatMode.EVERY_DAY,
-                    title = "Event",
+                    title = "Giga Event NN",
                     description = "Event description details",
                     color = 2,
                     reminderMode = ReminderMode.NONE
@@ -130,7 +132,7 @@ class MainViewModel @Inject constructor(
 
         var currentMonth = selectedMonth
 
-        var currentYear = testState.value.currentYear
+        var currentYear = state.value.selectedYear
 
         val c = Calendar.getInstance()
 
@@ -186,22 +188,26 @@ class MainViewModel @Inject constructor(
             day++
         }
 
-        _testState.value = testState.value.copy(
-            currentMonth = currentMonth,
-            currentYear = currentYear,
+        _state.value = state.value.copy(
+            selectedMonth = currentMonth,
+            selectedYear = currentYear,
             listOfDays = listOfDays,
             listOfEvents = emptyList()
         )
     }
 
-    private fun getCurrentMonthAndYear() {
+    fun getCurrentDate() {
         val c = Calendar.getInstance()
         val currentMonth = c.get(Calendar.MONTH)
         val currentYear = c.get(Calendar.YEAR)
+        val currentDay = c.get(Calendar.DAY_OF_MONTH)
 
-        _testState.value = testState.value.copy(
+        _state.value = state.value.copy(
+            selectedMonth = currentMonth,
+            selectedYear = currentYear,
             currentMonth = currentMonth,
-            currentYear = currentYear
+            currentYear = currentYear,
+            currentDay = currentDay
         )
     }
 }
