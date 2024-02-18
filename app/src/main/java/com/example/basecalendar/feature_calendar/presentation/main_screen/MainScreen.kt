@@ -137,7 +137,7 @@ fun MainScreen(
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 }
             }
-            AnimatedVisibility(visible = !viewModel.state.value.isLoading) {
+            AnimatedVisibility(visible = (!viewModel.state.value.isLoading && viewModel.state.value.listOfDays.isNotEmpty())) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(7),
                     verticalArrangement = Arrangement.SpaceBetween,

@@ -17,7 +17,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repository: CalendarRepository,
     private val mainUseCases: MainUseCases
 ) : ViewModel() {
 
@@ -32,7 +31,6 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             setFullCalendarForSelectedMonth(state.value.selectedMonth)
         }
-//        addTestDataToDatabase()
     }
 
     fun setFullCalendarForSelectedMonth(
@@ -104,26 +102,6 @@ class MainViewModel @Inject constructor(
         _state.value = state.value.copy(
             listOfEvents = listOfEvents
         )
-    }
-
-    // TEST DATA
-    private fun addTestDataToDatabase() {
-        viewModelScope.launch {
-            repository.insertCalendarEvent(
-                CalendarEventDto(
-                    id = 0,
-                    startingDate = 1704069142000,
-                    endingDate = 1704069142000,
-                    isTakingWholeDay = false,
-                    isRepeating = false,
-                    repeatMode = RepeatMode.EVERY_DAY,
-                    title = "Giga Event NN",
-                    description = "Event description details",
-                    color = 2,
-                    reminderMode = ReminderMode.NONE
-                )
-            )
-        }
     }
 
     private fun setEmptyCalendar(

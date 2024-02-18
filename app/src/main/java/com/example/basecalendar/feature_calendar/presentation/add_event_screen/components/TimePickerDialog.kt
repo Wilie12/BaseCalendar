@@ -43,7 +43,7 @@ fun TimePickerDialog(
                 .background(
                     shape = MaterialTheme.shapes.extraLarge,
                     color = MaterialTheme.colorScheme.surface
-                ),
+                )
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),

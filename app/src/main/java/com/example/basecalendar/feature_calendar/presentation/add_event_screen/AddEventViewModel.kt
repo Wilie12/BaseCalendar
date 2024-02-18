@@ -1,18 +1,20 @@
 package com.example.basecalendar.feature_calendar.presentation.add_event_screen
 
-import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.basecalendar.feature_calendar.data.local_data_source.dto.CalendarEventDto
+import com.example.basecalendar.feature_calendar.data.util.Constants
+import com.example.basecalendar.feature_calendar.domain.use_case.add_event.AddEventUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.text.SimpleDateFormat
+import kotlinx.coroutines.launch
 import java.util.Calendar
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class AddEventViewModel @Inject constructor(
-
+    private val addEventUseCases: AddEventUseCases
 ): ViewModel() {
     // TODO - finish
 
@@ -21,8 +23,27 @@ class AddEventViewModel @Inject constructor(
 
     init {
         getCurrentStartingAndEndingDate()
+        setStateColor(Constants.blue)
     }
 
+    fun saveEvent() {
+        viewModelScope.launch {
+            addEventUseCases.addEvent(
+                CalendarEventDto(
+                    id = 0,
+                    startingDate = state.value.startingDate,
+                    endingDate = state.value.endingDate,
+                    isTakingWholeDay = state.value.isTakingWholeDay,
+                    isRepeating = state.value.isRepeating,
+                    repeatMode = state.value.repeatMode,
+                    title = state.value.title,
+                    description = state.value.description,
+                    color = state.value.color,
+                    reminderMode = state.value.reminderMode
+                )
+            )
+        }
+    }
     fun setStateTitle(title: String) {
         _state.value = state.value.copy(
             title = title
@@ -36,17 +57,13 @@ class AddEventViewModel @Inject constructor(
     }
 
     fun setStateStartingDate(startingDate: Long) {
-        val sdf = SimpleDateFormat("EE, d MMM yyyy", Locale.getDefault())
-
         _state.value = state.value.copy(
             startingDate = startingDate
         )
     }
     fun setStateEndingDate(endingDate: Long) {
-        val sdf = SimpleDateFormat("EE, d MMM yyyy", Locale.getDefault())
-
         _state.value = state.value.copy(
-            startingDate = endingDate
+            endingDate = endingDate
         )
     }
 
@@ -75,9 +92,31 @@ class AddEventViewModel @Inject constructor(
         )
     }
 
-    private fun getCurrentStartingAndEndingDate() {
-        val sdf = SimpleDateFormat("EE, d MMM yyyy", Locale.getDefault())
+    fun setStateRepeatMode(repeatMode: Int) {
+        _state.value = state.value.copy(
+            repeatMode = repeatMode
+        )
+    }
 
+    fun setStateReminderMode(reminderMode: Int) {
+        _state.value = state.value.copy(
+            reminderMode = reminderMode
+        )
+    }
+
+    fun setStateColor(color: Int) {
+        _state.value = state.value.copy(
+            color = color
+        )
+    }
+
+    fun setStateDescription(description: String) {
+        _state.value = state.value.copy(
+            description = description
+        )
+    }
+
+    private fun getCurrentStartingAndEndingDate() {
         _state.value = state.value.copy(
             startingDate = System.currentTimeMillis(),
             endingDate = System.currentTimeMillis() + 3600000

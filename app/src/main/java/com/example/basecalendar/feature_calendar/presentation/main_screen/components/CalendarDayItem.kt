@@ -56,7 +56,7 @@ fun CalendarDayItem(
                             fontSize = 14.sp,
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(Color.Red)
+                                .background(Color(event.color))
                                 .clickable {  }
                         )
                     }

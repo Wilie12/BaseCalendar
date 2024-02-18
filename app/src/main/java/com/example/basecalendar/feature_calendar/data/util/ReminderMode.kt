@@ -8,4 +8,13 @@ object ReminderMode {
     const val MINUTES_15 = 3
     const val HOUR_1 = 4
     const val DAY_1 = 5
+
+    val listOfReminderOption = listOf(
+        NONE,
+        MINUTES_5,
+        MINUTES_10,
+        MINUTES_15,
+        HOUR_1,
+        DAY_1
+    )
 }
