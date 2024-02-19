@@ -4,11 +4,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.basecalendar.feature_calendar.data.local_data_source.dto.CalendarEventDto
-import com.example.basecalendar.feature_calendar.data.util.ReminderMode
-import com.example.basecalendar.feature_calendar.data.util.RepeatMode
 import com.example.basecalendar.feature_calendar.domain.model.CalendarDay
-import com.example.basecalendar.feature_calendar.domain.repository.CalendarRepository
 import com.example.basecalendar.feature_calendar.domain.use_case.main.MainUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -61,23 +57,27 @@ class MainViewModel @Inject constructor(
         listOfEvents.forEach { calendarEvent ->
 
             c.timeInMillis = calendarEvent.startingDate
-            val eventDay = c.get(Calendar.DAY_OF_MONTH)
+            val startingDay = c.get(Calendar.DAY_OF_MONTH)
 
-            val listOfEventsFromCurrentDay =
-                listOfDays[listOfDays.indexOf(listOfDays.find { calendarDay ->
-                    calendarDay.dayOfMonth == eventDay
-                })].listOfEvents.toMutableList()
+            c.timeInMillis = calendarEvent.endingDate
+            val endingDay = c.get(Calendar.DAY_OF_MONTH)
 
-            listOfEventsFromCurrentDay += calendarEvent
 
-            listOfDays[
-                listOfDays.indexOf(listOfDays.find { calendarDay ->
-                    calendarDay.dayOfMonth == eventDay
-                })] = CalendarDay(
-                listOfEvents = listOfEventsFromCurrentDay.sortedBy { it.startingDate },
-                isEmpty = false,
-                dayOfMonth = eventDay
-            )
+            for (i in startingDay..endingDay) {
+                val listOfEventsFromCurrentDay =
+                    listOfDays[listOfDays.indexOf(listOfDays.find { calendarDay ->
+                        calendarDay.dayOfMonth == i
+                    })].listOfEvents.toMutableList()
+                listOfEventsFromCurrentDay += calendarEvent
+                listOfDays[
+                    listOfDays.indexOf(listOfDays.find { calendarDay ->
+                        calendarDay.dayOfMonth == i
+                    })] = CalendarDay(
+                    listOfEvents = listOfEventsFromCurrentDay.sortedBy { it.startingDate },
+                    isEmpty = false,
+                    dayOfMonth = i
+                )
+            }
         }
 
         _state.value = state.value.copy(

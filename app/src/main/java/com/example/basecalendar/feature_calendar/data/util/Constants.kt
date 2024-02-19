@@ -2,6 +2,9 @@ package com.example.basecalendar.feature_calendar.data.util
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import com.example.basecalendar.R
+import com.example.basecalendar.feature_calendar.util.NavigationItem
+import com.example.basecalendar.feature_calendar.util.Screen
 
 object Constants {
 
@@ -21,5 +24,18 @@ object Constants {
         green,
         yellow,
         orange
+    )
+
+    val listOfScreens = listOf(
+        NavigationItem(
+            title = "Day",
+            icon = R.drawable.ic_day,
+            route = Screen.DayScreen.route
+        ),
+        NavigationItem(
+            title = "Month",
+            icon = R.drawable.ic_month,
+            route = Screen.MainScreen.route
+        )
     )
 }
