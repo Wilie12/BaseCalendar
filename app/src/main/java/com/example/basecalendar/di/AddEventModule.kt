@@ -1,8 +1,9 @@
 package com.example.basecalendar.di
 
 import com.example.basecalendar.feature_calendar.domain.repository.CalendarRepository
-import com.example.basecalendar.feature_calendar.domain.use_case.AddEvent
+import com.example.basecalendar.feature_calendar.domain.use_case.add_event.AddEvent
 import com.example.basecalendar.feature_calendar.domain.use_case.add_event.AddEventUseCases
+import com.example.basecalendar.feature_calendar.domain.use_case.add_event.GetSelectedHourAndMinutesInMillis
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,7 +18,8 @@ object AddEventModule {
     @ViewModelScoped
     fun provideAddEventUseCases(repository: CalendarRepository): AddEventUseCases {
         return AddEventUseCases(
-            addEvent = AddEvent(repository)
+            addEvent = AddEvent(repository),
+            getSelectedHourAndMinutesInMillis = GetSelectedHourAndMinutesInMillis()
         )
     }
 }

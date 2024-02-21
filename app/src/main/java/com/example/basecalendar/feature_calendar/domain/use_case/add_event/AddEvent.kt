@@ -1,4 +1,4 @@
-package com.example.basecalendar.feature_calendar.domain.use_case
+package com.example.basecalendar.feature_calendar.domain.use_case.add_event
 
 import com.example.basecalendar.feature_calendar.data.local_data_source.dto.CalendarEventDto
 import com.example.basecalendar.feature_calendar.domain.repository.CalendarRepository

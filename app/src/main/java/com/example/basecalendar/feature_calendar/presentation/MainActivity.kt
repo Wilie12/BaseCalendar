@@ -6,16 +6,15 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.AddEventScreen
+import com.example.basecalendar.feature_calendar.presentation.add_event_screen.AddEventScreenRoot
 import com.example.basecalendar.feature_calendar.presentation.day_screen.DayScreen
 import com.example.basecalendar.feature_calendar.presentation.main_screen.MainScreen
+import com.example.basecalendar.feature_calendar.presentation.main_screen.MainScreenRoot
 import com.example.basecalendar.feature_calendar.util.Screen
 import com.example.basecalendar.ui.theme.BaseCalendarTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,10 +35,10 @@ class MainActivity : ComponentActivity() {
                         startDestination = Screen.MainScreen.route
                     ) {
                         composable(route = Screen.MainScreen.route) {
-                            MainScreen(navController = navController)
+                            MainScreenRoot(navController = navController)
                         }
                         composable(route = Screen.AddEventScreen.route) {
-                            AddEventScreen(navController = navController)
+                            AddEventScreenRoot(navController = navController)
                         }
                         composable(route = Screen.DayScreen.route) {
                             DayScreen(navController = navController)

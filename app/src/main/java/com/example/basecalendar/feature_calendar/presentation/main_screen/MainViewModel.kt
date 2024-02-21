@@ -29,7 +29,28 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun setFullCalendarForSelectedMonth(
+    fun onEvent(event: MainEvent) {
+        when (event) {
+            MainEvent.CurrentMonth -> {
+                getCurrentDate()
+                setFullCalendarForSelectedMonth(
+                    state.value.selectedMonth
+                )
+            }
+            MainEvent.NextMonth -> {
+                setFullCalendarForSelectedMonth(
+                    state.value.selectedMonth + 1
+                )
+            }
+            MainEvent.PreviousMonth -> {
+                setFullCalendarForSelectedMonth(
+                    state.value.selectedMonth - 1
+                )
+            }
+        }
+    }
+
+    private fun setFullCalendarForSelectedMonth(
         selectedMonth: Int
     ) {
 
@@ -49,39 +70,13 @@ class MainViewModel @Inject constructor(
     }
     private fun addEventsToCalendar() {
 
-        val c = Calendar.getInstance()
-
-        val listOfDays = state.value.listOfDays.toMutableList()
-        val listOfEvents = state.value.listOfEvents
-
-        listOfEvents.forEach { calendarEvent ->
-
-            c.timeInMillis = calendarEvent.startingDate
-            val startingDay = c.get(Calendar.DAY_OF_MONTH)
-
-            c.timeInMillis = calendarEvent.endingDate
-            val endingDay = c.get(Calendar.DAY_OF_MONTH)
-
-
-            for (i in startingDay..endingDay) {
-                val listOfEventsFromCurrentDay =
-                    listOfDays[listOfDays.indexOf(listOfDays.find { calendarDay ->
-                        calendarDay.dayOfMonth == i
-                    })].listOfEvents.toMutableList()
-                listOfEventsFromCurrentDay += calendarEvent
-                listOfDays[
-                    listOfDays.indexOf(listOfDays.find { calendarDay ->
-                        calendarDay.dayOfMonth == i
-                    })] = CalendarDay(
-                    listOfEvents = listOfEventsFromCurrentDay.sortedBy { it.startingDate },
-                    isEmpty = false,
-                    dayOfMonth = i
-                )
-            }
-        }
+        val listOfDays = mainUseCases.getCalendarWithEvents(
+            listOfDays = state.value.listOfDays,
+            listOfEvents = state.value.listOfEvents
+        )
 
         _state.value = state.value.copy(
-            listOfDays = listOfDays.toList()
+            listOfDays = listOfDays
         )
     }
 
@@ -108,84 +103,42 @@ class MainViewModel @Inject constructor(
         selectedMonth: Int
     ) {
 
-        var currentMonth = selectedMonth
+        var selectedMonth = selectedMonth
 
-        var currentYear = state.value.selectedYear
+        var selectedYear = state.value.selectedYear
 
-        val c = Calendar.getInstance()
+        if (selectedMonth < 0) {
+            selectedMonth = 11
+            selectedYear -= 1
 
-        if (currentMonth < 0) {
-            c.set(Calendar.MONTH, 11)
-            currentMonth = 11
-            currentYear -= 1
-
-        } else if (currentMonth > 11) {
-            c.set(Calendar.MONTH, 0)
-            currentMonth = 0
-            currentYear += 1
-        } else {
-            c.set(Calendar.MONTH, currentMonth)
+        } else if (selectedMonth > 11) {
+            selectedMonth = 0
+            selectedYear += 1
         }
 
-        c.set(Calendar.YEAR, currentYear)
-        c.set(Calendar.DAY_OF_MONTH, 1)
-        val firstDayOfMonthInWeek = c.get(Calendar.DAY_OF_WEEK)
-        val daysInMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH)
-
-        var day = 1
-
-        val listOfDays = mutableListOf<CalendarDay>()
-
-        if (firstDayOfMonthInWeek == 1) {
-            for (i in 1..6) {
-                listOfDays.add(
-                    CalendarDay(
-                        listOfEvents = emptyList(),
-                        isEmpty = true,
-                        dayOfMonth = -1
-                    )
-                )
-            }
-            listOfDays.add(
-                CalendarDay(
-                    listOfEvents = emptyList(),
-                    isEmpty = false,
-                    dayOfMonth = 1
-                )
-            )
-        }
-
-        while (day < daysInMonth + firstDayOfMonthInWeek - 1) {
-            listOfDays.add(
-                CalendarDay(
-                    listOfEvents = emptyList(),
-                    isEmpty = (day < firstDayOfMonthInWeek - 1),
-                    dayOfMonth = day - firstDayOfMonthInWeek + 2
-                )
-            )
-            day++
-        }
+        val listOfDays = mainUseCases.getEmptyCalendar(
+            selectedMonth,
+            selectedYear
+        )
 
         _state.value = state.value.copy(
-            selectedMonth = currentMonth,
-            selectedYear = currentYear,
+            selectedMonth = selectedMonth,
+            selectedYear = selectedYear,
             listOfDays = listOfDays,
             listOfEvents = emptyList()
         )
     }
 
-    fun getCurrentDate() {
-        val c = Calendar.getInstance()
-        val currentMonth = c.get(Calendar.MONTH)
-        val currentYear = c.get(Calendar.YEAR)
-        val currentDay = c.get(Calendar.DAY_OF_MONTH)
+    private fun getCurrentDate() {
+
+        val currentDate = mainUseCases.getCurrentDate()
 
         _state.value = state.value.copy(
-            selectedMonth = currentMonth,
-            selectedYear = currentYear,
-            currentMonth = currentMonth,
-            currentYear = currentYear,
-            currentDay = currentDay
+            selectedMonth = currentDate.month,
+            selectedYear = currentDate.year,
+            currentMonth = currentDate.month,
+            currentYear = currentDate.year,
+            currentDay = currentDate.day
         )
     }
 }

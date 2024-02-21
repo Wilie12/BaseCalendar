@@ -38,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toDrawable
@@ -45,6 +46,7 @@ import androidx.core.graphics.toColor
 import androidx.core.graphics.toColorLong
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.basecalendar.R
 import com.example.basecalendar.feature_calendar.data.util.Constants
 import com.example.basecalendar.feature_calendar.data.util.ReminderMode
@@ -61,7 +63,8 @@ import com.example.basecalendar.feature_calendar.util.parseRepeatModeIntToString
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEventScreen(
-    viewModel: AddEventViewModel = hiltViewModel(),
+    state: AddEventState,
+    onEvent: (AddEventEvent) -> Unit,
     navController: NavController
 ) {
     val scrollState = rememberScrollState()
@@ -80,8 +83,8 @@ fun AddEventScreen(
     val showReminderModeDialog = rememberSaveable { mutableStateOf(false) }
     val showColorDialog = rememberSaveable { mutableStateOf(false) }
 
-    startingDatePickerState.setSelection(viewModel.state.value.startingDate)
-    endingDatePickerState.setSelection(viewModel.state.value.endingDate)
+    startingDatePickerState.setSelection(state.startingDate)
+    endingDatePickerState.setSelection(state.endingDate)
 
     if (showStartingDateDialog.value) {
         DatePickerDialog(
@@ -90,7 +93,7 @@ fun AddEventScreen(
                 TextButton(onClick = {
                     showStartingDateDialog.value = false
                     startingDatePickerState.selectedDateMillis?.let {
-                        viewModel.setStateStartingDate(it)
+                        onEvent(AddEventEvent.ChangeStartingDate(it))
                     }
                 }) {
                     Text(text = "Ok")
@@ -112,7 +115,7 @@ fun AddEventScreen(
                 TextButton(onClick = {
                     showEndingDateDialog.value = false
                     endingDatePickerState.selectedDateMillis?.let {
-                        viewModel.setStateEndingDate(it)
+                        onEvent(AddEventEvent.ChangeEndingDate(it))
                     }
                 }) {
                     Text(text = "Ok")
@@ -131,9 +134,11 @@ fun AddEventScreen(
         TimePickerDialog(
             onCancel = { showStartingTimeDialog.value = false },
             onConfirm = {
-                viewModel.setStartingDateHourAndMinutes(
-                    hour = startingTimePickerState.hour,
-                    minutes = startingTimePickerState.minute
+                onEvent(
+                    AddEventEvent.ChangeStartingHourAndMinutes(
+                        hour = startingTimePickerState.hour,
+                        minutes = startingTimePickerState.minute
+                    )
                 )
                 showStartingTimeDialog.value = false
             }
@@ -147,9 +152,11 @@ fun AddEventScreen(
         TimePickerDialog(
             onCancel = { showEndingTimeDialog.value = false },
             onConfirm = {
-                viewModel.setEndingDateHourAndMinutes(
-                    hour = endingTimePickerState.hour,
-                    minutes = endingTimePickerState.minute
+                onEvent(
+                    AddEventEvent.ChangeEndingHourAndMinutes(
+                        hour = endingTimePickerState.hour,
+                        minutes = endingTimePickerState.minute
+                    )
                 )
                 showEndingTimeDialog.value = false
             }
@@ -162,9 +169,9 @@ fun AddEventScreen(
     if (showRepeatModeDialog.value) {
         RadioOptionsDialog(
             radioOptions = RepeatMode.listOfRepeatOptions,
-            selectedOption = viewModel.state.value.repeatMode,
+            selectedOption = state.repeatMode,
             onSelect = {
-                viewModel.setStateRepeatMode(it)
+                onEvent(AddEventEvent.ChangeRepeatMode(it))
                 showRepeatModeDialog.value = false
             },
             namingFun = {
@@ -176,9 +183,9 @@ fun AddEventScreen(
     if (showReminderModeDialog.value) {
         RadioOptionsDialog(
             radioOptions = ReminderMode.listOfReminderOption,
-            selectedOption = viewModel.state.value.reminderMode,
+            selectedOption = state.reminderMode,
             onSelect = {
-                viewModel.setStateReminderMode(it)
+                onEvent(AddEventEvent.ChangeReminderMode(it))
                 showReminderModeDialog.value = false
             },
             namingFun = {
@@ -191,9 +198,9 @@ fun AddEventScreen(
     if (showColorDialog.value) {
         ColorOptionsDialog(
             radioOptions = Constants.listOfColors,
-            selectedOption = viewModel.state.value.color,
+            selectedOption = state.color,
             onSelect = {
-                viewModel.setStateColor(it)
+                onEvent(AddEventEvent.ChangeColor(it))
                 showColorDialog.value = false
             },
             namingFun = { parseColorIntToString(it) },
@@ -216,8 +223,8 @@ fun AddEventScreen(
                 },
                 actions = {
                     TextButton(onClick = {
-                        if (viewModel.state.value.title.isNotEmpty() && viewModel.state.value.description.isNotEmpty()) {
-                            viewModel.saveEvent()
+                        if (state.title.isNotEmpty() && state.description.isNotEmpty()) {
+                            onEvent(AddEventEvent.SaveEvent)
                         }
                     }) {
                         Text(
@@ -237,9 +244,9 @@ fun AddEventScreen(
                 .scrollable(scrollState, Orientation.Vertical)
         ) {
             TextField(
-                value = viewModel.state.value.title,
+                value = state.title,
                 onValueChange = {
-                    viewModel.setStateTitle(it)
+                    onEvent(AddEventEvent.EnteredTitle(it))
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = TextFieldDefaults.colors(
@@ -275,9 +282,9 @@ fun AddEventScreen(
                     Text(text = "Whole day")
                 }
                 Switch(
-                    checked = viewModel.state.value.isTakingWholeDay,
+                    checked = state.isTakingWholeDay,
                     onCheckedChange = {
-                        viewModel.setStateIsTakingWholeDay(it)
+                        onEvent(AddEventEvent.ChangeIsTakingWholeDay(it))
                     }
                 )
             }
@@ -296,12 +303,12 @@ fun AddEventScreen(
                         tint = Color.Transparent
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    DateText(date = viewModel.state.value.startingDate) {
+                    DateText(date = state.startingDate) {
                         showStartingDateDialog.value = true
                     }
                 }
-                AnimatedVisibility(visible = !viewModel.state.value.isTakingWholeDay) {
-                    TimeText(date = viewModel.state.value.startingDate) {
+                AnimatedVisibility(visible = !state.isTakingWholeDay) {
+                    TimeText(date = state.startingDate) {
                         showStartingTimeDialog.value = true
                     }
                 }
@@ -321,12 +328,12 @@ fun AddEventScreen(
                         tint = Color.Transparent
                     )
                     Spacer(modifier = Modifier.width(8.dp))
-                    DateText(date = viewModel.state.value.endingDate) {
+                    DateText(date = state.endingDate) {
                         showEndingDateDialog.value = true
                     }
                 }
-                AnimatedVisibility(visible = !viewModel.state.value.isTakingWholeDay) {
-                    TimeText(date = viewModel.state.value.endingDate) {
+                AnimatedVisibility(visible = !state.isTakingWholeDay) {
+                    TimeText(date = state.endingDate) {
                         showEndingTimeDialog.value = true
                     }
                 }
@@ -344,7 +351,7 @@ fun AddEventScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = parseRepeatModeIntToString(viewModel.state.value.repeatMode)
+                    text = parseRepeatModeIntToString(state.repeatMode)
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -362,7 +369,7 @@ fun AddEventScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = parseReminderModeIntToName(viewModel.state.value.reminderMode)
+                    text = parseReminderModeIntToName(state.reminderMode)
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -377,11 +384,11 @@ fun AddEventScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_color),
                     contentDescription = "Color selection",
-                    tint = Color(viewModel.state.value.color)
+                    tint = Color(state.color)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = parseColorIntToString(viewModel.state.value.color)
+                    text = parseColorIntToString(state.color)
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
@@ -398,9 +405,9 @@ fun AddEventScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 TextField(
-                    value = viewModel.state.value.description,
+                    value = state.description,
                     onValueChange = {
-                        viewModel.setStateDescription(it)
+                        onEvent(AddEventEvent.ChangeDescription(it))
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.colors(
@@ -421,4 +428,14 @@ fun AddEventScreen(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun AddEventScreenPreview() {
+    AddEventScreen(
+        state = AddEventState(),
+        onEvent = {},
+        navController = rememberNavController()
+    )
 }

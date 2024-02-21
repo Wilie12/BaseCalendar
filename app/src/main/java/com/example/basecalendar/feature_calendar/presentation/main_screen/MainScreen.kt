@@ -7,11 +7,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -28,31 +26,26 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.basecalendar.R
-import com.example.basecalendar.feature_calendar.data.util.Constants
 import com.example.basecalendar.feature_calendar.presentation.common.DrawerSheet
 import com.example.basecalendar.feature_calendar.presentation.main_screen.components.CalendarDayItem
 import com.example.basecalendar.feature_calendar.util.Screen
@@ -62,14 +55,15 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    viewModel: MainViewModel = hiltViewModel(),
+    state: MainState,
+    onEvent: (MainEvent) -> Unit,
     navController: NavController
 ) {
     val dayOfWeek = listOf("Md", "Tu", "Wd", "Th", "Fr", "St", "Sn")
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    var selectedItemIndex by remember { mutableStateOf(1) }
+    var selectedItemIndex by remember { mutableIntStateOf(1) }
 
     ModalNavigationDrawer(
         drawerContent = {
@@ -89,7 +83,7 @@ fun MainScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            text = "${parseMonthIntToString(viewModel.state.value.selectedMonth)} " + if (viewModel.state.value.selectedYear != 2024) "${viewModel.state.value.selectedYear}" else ""
+                            text = "${parseMonthIntToString(state.selectedMonth)} " + if (state.selectedYear != 2024) "${state.selectedYear}" else ""
                         )
                     },
                     navigationIcon = {
@@ -110,22 +104,17 @@ fun MainScreen(
                                     shape = RoundedCornerShape(10.dp)
                                 )
                                 .clickable {
-                                    viewModel.getCurrentDate()
-                                    viewModel.setFullCalendarForSelectedMonth(
-                                        viewModel.state.value.selectedMonth
-                                    )
+                                    onEvent(MainEvent.CurrentMonth)
                                 }
                                 .padding(4.dp)
                         ) {
                             Text(
-                                text = viewModel.state.value.currentDay.toString(),
+                                text = state.currentDay.toString(),
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
                         IconButton(onClick = {
-                            viewModel.setFullCalendarForSelectedMonth(
-                                viewModel.state.value.selectedMonth - 1
-                            )
+                            onEvent(MainEvent.PreviousMonth)
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_back),
@@ -133,9 +122,7 @@ fun MainScreen(
                             )
                         }
                         IconButton(onClick = {
-                            viewModel.setFullCalendarForSelectedMonth(
-                                viewModel.state.value.selectedMonth + 1
-                            )
+                            onEvent(MainEvent.NextMonth)
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_next),
@@ -176,7 +163,7 @@ fun MainScreen(
                             )
                         }
                     }
-                    if (viewModel.state.value.isLoading) {
+                    if (state.isLoading) {
                         LinearProgressIndicator(
                             color = MaterialTheme.colorScheme.primary,
                             modifier = Modifier
@@ -186,18 +173,18 @@ fun MainScreen(
                     }
                 }
                 Divider(modifier = Modifier.fillMaxWidth())
-                AnimatedVisibility(visible = !viewModel.state.value.isLoading) {
+                AnimatedVisibility(visible = !state.isLoading) {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(7),
                         verticalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxHeight()
                     ) {
-                        items(viewModel.state.value.listOfDays) {
+                        items(state.listOfDays) {
                             CalendarDayItem(
                                 calendarDay = it,
-                                isCurrentDay = it.dayOfMonth == viewModel.state.value.currentDay &&
-                                        viewModel.state.value.currentYear == viewModel.state.value.selectedYear &&
-                                        viewModel.state.value.currentMonth == viewModel.state.value.selectedMonth
+                                isCurrentDay = it.dayOfMonth == state.currentDay &&
+                                        state.currentYear == state.selectedYear &&
+                                        state.currentMonth == state.selectedMonth
                             )
                             Divider(modifier = Modifier.fillMaxWidth())
                         }
@@ -206,4 +193,14 @@ fun MainScreen(
             }
         }
     }
+}
+
+@Preview
+@Composable
+fun MainScreenPreview() {
+    MainScreen(
+        state = MainState(),
+        onEvent = {},
+        navController = rememberNavController()
+    )
 }
