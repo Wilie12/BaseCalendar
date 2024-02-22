@@ -83,7 +83,7 @@ fun MainScreen(
                 TopAppBar(
                     title = {
                         Text(
-                            text = "${parseMonthIntToString(state.selectedMonth)} " + if (state.selectedYear != 2024) "${state.selectedYear}" else ""
+                            text = "${parseMonthIntToString(state.selectedDate.month)} " + if (state.selectedDate.year != 2024) "${state.selectedDate.year}" else ""
                         )
                     },
                     navigationIcon = {
@@ -109,7 +109,7 @@ fun MainScreen(
                                 .padding(4.dp)
                         ) {
                             Text(
-                                text = state.currentDay.toString(),
+                                text = state.currentDate.day.toString(),
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
@@ -182,9 +182,9 @@ fun MainScreen(
                         items(state.listOfDays) {
                             CalendarDayItem(
                                 calendarDay = it,
-                                isCurrentDay = it.dayOfMonth == state.currentDay &&
-                                        state.currentYear == state.selectedYear &&
-                                        state.currentMonth == state.selectedMonth
+                                isCurrentDay = it.dayOfMonth == state.currentDate.day &&
+                                        state.currentDate.year == state.selectedDate.year &&
+                                        state.currentDate.month == state.selectedDate.month
                             )
                             Divider(modifier = Modifier.fillMaxWidth())
                         }

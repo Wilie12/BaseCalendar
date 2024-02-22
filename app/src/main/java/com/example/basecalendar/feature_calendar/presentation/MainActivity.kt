@@ -10,10 +10,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.basecalendar.feature_calendar.presentation.add_event_screen.AddEventScreen
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.AddEventScreenRoot
-import com.example.basecalendar.feature_calendar.presentation.day_screen.DayScreen
-import com.example.basecalendar.feature_calendar.presentation.main_screen.MainScreen
+import com.example.basecalendar.feature_calendar.presentation.day_screen.DayScreenRoot
 import com.example.basecalendar.feature_calendar.presentation.main_screen.MainScreenRoot
 import com.example.basecalendar.feature_calendar.util.Screen
 import com.example.basecalendar.ui.theme.BaseCalendarTheme
@@ -41,7 +39,7 @@ class MainActivity : ComponentActivity() {
                             AddEventScreenRoot(navController = navController)
                         }
                         composable(route = Screen.DayScreen.route) {
-                            DayScreen(navController = navController)
+                            DayScreenRoot(navController = navController)
                         }
                     }
                 }

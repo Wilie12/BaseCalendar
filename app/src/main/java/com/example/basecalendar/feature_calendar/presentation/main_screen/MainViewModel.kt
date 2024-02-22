@@ -4,11 +4,10 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.basecalendar.feature_calendar.domain.model.CalendarDay
+import com.example.basecalendar.feature_calendar.data.util.CalendarDate
 import com.example.basecalendar.feature_calendar.domain.use_case.main.MainUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,9 +22,9 @@ class MainViewModel @Inject constructor(
 
     init {
         getCurrentDate()
-        setEmptyCalendar(state.value.selectedMonth)
+        setEmptyCalendar(state.value.selectedDate.month)
         viewModelScope.launch {
-            setFullCalendarForSelectedMonth(state.value.selectedMonth)
+            setFullCalendarForSelectedMonth(state.value.selectedDate.month)
         }
     }
 
@@ -34,17 +33,17 @@ class MainViewModel @Inject constructor(
             MainEvent.CurrentMonth -> {
                 getCurrentDate()
                 setFullCalendarForSelectedMonth(
-                    state.value.selectedMonth
+                    state.value.selectedDate.month
                 )
             }
             MainEvent.NextMonth -> {
                 setFullCalendarForSelectedMonth(
-                    state.value.selectedMonth + 1
+                    state.value.selectedDate.month + 1
                 )
             }
             MainEvent.PreviousMonth -> {
                 setFullCalendarForSelectedMonth(
-                    state.value.selectedMonth - 1
+                    state.value.selectedDate.month - 1
                 )
             }
         }
@@ -82,12 +81,12 @@ class MainViewModel @Inject constructor(
 
     private suspend fun getAllCalendarEventsFromCurrentMonth() {
         val firstDayOfMonth = mainUseCases.getFirstDayOfMonthInMillis(
-            state.value.selectedMonth,
-            state.value.selectedYear
+            state.value.selectedDate.month,
+            state.value.selectedDate.year
         )
         val firstDayOfNextMonth = mainUseCases.getFirstDayOfNextMonthInMillis(
-            state.value.selectedMonth,
-            state.value.selectedYear
+            state.value.selectedDate.month,
+            state.value.selectedDate.year
         )
 
         val listOfEvents = mainUseCases.getAllCalendarEventsFromCurrentMonth(
@@ -105,7 +104,7 @@ class MainViewModel @Inject constructor(
 
         var selectedMonth = selectedMonth
 
-        var selectedYear = state.value.selectedYear
+        var selectedYear = state.value.selectedDate.year
 
         if (selectedMonth < 0) {
             selectedMonth = 11
@@ -122,8 +121,11 @@ class MainViewModel @Inject constructor(
         )
 
         _state.value = state.value.copy(
-            selectedMonth = selectedMonth,
-            selectedYear = selectedYear,
+            selectedDate = CalendarDate(
+                day = state.value.selectedDate.day,
+                month = selectedMonth,
+                year = selectedYear
+            ),
             listOfDays = listOfDays,
             listOfEvents = emptyList()
         )
@@ -134,11 +136,16 @@ class MainViewModel @Inject constructor(
         val currentDate = mainUseCases.getCurrentDate()
 
         _state.value = state.value.copy(
-            selectedMonth = currentDate.month,
-            selectedYear = currentDate.year,
-            currentMonth = currentDate.month,
-            currentYear = currentDate.year,
-            currentDay = currentDate.day
+            selectedDate = CalendarDate(
+                day = currentDate.day,
+                month = currentDate.month,
+                year = currentDate.year
+            ),
+            currentDate = CalendarDate(
+                day = currentDate.day,
+                month = currentDate.month,
+                year = currentDate.year
+            )
         )
     }
 }
