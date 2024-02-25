@@ -96,20 +96,22 @@ class AddEventViewModel @Inject constructor(
 
             AddEventEvent.SaveEvent -> {
                 viewModelScope.launch {
-                    addEventUseCases.addEvent(
-                        CalendarEventDto(
-                            id = 0,
-                            startingDate = state.value.startingDate,
-                            endingDate = state.value.endingDate,
-                            isTakingWholeDay = state.value.isTakingWholeDay,
-                            isRepeating = state.value.isRepeating,
-                            repeatMode = state.value.repeatMode,
-                            title = state.value.title,
-                            description = state.value.description,
-                            color = state.value.color,
-                            reminderMode = state.value.reminderMode
+                    if (state.value.endingDate > state.value.startingDate) {
+                        addEventUseCases.addEvent(
+                            CalendarEventDto(
+                                id = 0,
+                                startingDate = state.value.startingDate,
+                                endingDate = state.value.endingDate,
+                                isTakingWholeDay = state.value.isTakingWholeDay,
+                                isRepeating = state.value.isRepeating,
+                                repeatMode = state.value.repeatMode,
+                                title = state.value.title,
+                                description = state.value.description,
+                                color = state.value.color,
+                                reminderMode = state.value.reminderMode
+                            )
                         )
-                    )
+                    }
                 }
             }
         }

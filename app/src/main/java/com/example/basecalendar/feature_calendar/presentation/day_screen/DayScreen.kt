@@ -1,6 +1,5 @@
 package com.example.basecalendar.feature_calendar.presentation.day_screen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -50,10 +49,10 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.basecalendar.R
 import com.example.basecalendar.feature_calendar.presentation.common.DrawerSheet
+import com.example.basecalendar.feature_calendar.presentation.day_screen.components.DayEventItem
 import com.example.basecalendar.feature_calendar.util.parseDayOfWeekIntToString
 import com.example.basecalendar.feature_calendar.util.parseMonthIntToString
 import kotlinx.coroutines.launch
-import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -108,23 +107,17 @@ fun DayScreen(
                                     shape = RoundedCornerShape(10.dp)
                                 )
                                 .clickable {
-//                                    viewModel.getCurrentDate()
-//                                    viewModel.setFullCalendarForSelectedMonth(
-//                                        viewModel.state.value.selectedMonth
-//                                    )
+                                    onEvent(DayEvent.CurrentDay)
                                 }
                                 .padding(4.dp)
                         ) {
                             Text(
-//                                text = viewModel.state.value.currentDay.toString(),
-                                text = "1",
+                                text = state.currentDate.day.toString(),
                                 color = MaterialTheme.colorScheme.primary
                             )
                         }
                         IconButton(onClick = {
-//                            viewModel.setFullCalendarForSelectedMonth(
-//                                viewModel.state.value.selectedMonth - 1
-//                            )
+                            onEvent(DayEvent.PreviousDay)
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_back),
@@ -132,9 +125,7 @@ fun DayScreen(
                             )
                         }
                         IconButton(onClick = {
-//                            viewModel.setFullCalendarForSelectedMonth(
-//                                viewModel.state.value.selectedMonth + 1
-//                            )
+                            onEvent(DayEvent.NextDay)
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_next),
@@ -204,12 +195,12 @@ fun DayScreen(
                             Column {
                                 for (i in 1..23) {
                                     if (i == 1) {
-                                        Spacer(modifier = Modifier.height(15.dp))
+                                        Spacer(modifier = Modifier.height(30.dp))
                                     }
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically,
                                         modifier = Modifier
-                                            .height(50.dp)
+                                            .height(60.dp)
                                     ) {
                                         Text(
                                             text = if (i < 10) "0$i:00" else "$i:00",
@@ -220,54 +211,21 @@ fun DayScreen(
                                         Divider()
                                     }
                                     if (i == 23) {
-                                        Spacer(modifier = Modifier.height(25.dp))
+                                        Spacer(modifier = Modifier.height(30.dp))
                                     }
                                 }
                             }
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceEvenly
-                            ) {
-
-                                // TODO - TEST displaying correct hour
-                                // TODO - do something useful with this
-                                val startingDate = 1708605120000
-                                val endingDate = 1708610400000
-
-                                val c = Calendar.getInstance()
-
-                                c.timeInMillis = startingDate
-                                Log.d("TEST_DATE_DISPLAY", "startingDate: ${c.timeInMillis}")
-                                val startingHour = c.get(Calendar.HOUR_OF_DAY)
-                                Log.d("TEST_DATE_DISPLAY", "startingHour: $startingHour")
-                                val startingMinutes = c.get(Calendar.MINUTE).toFloat().div(60)
-                                Log.d("TEST_DATE_DISPLAY", "startingMinutes: $startingMinutes")
-
-                                c.timeInMillis = endingDate
-                                val endingHour = c.get(Calendar.HOUR_OF_DAY)
-                                Log.d("TEST_DATE_DISPLAY", "endingHour: $endingHour")
-                                val endingMinutes = c.get(Calendar.MINUTE).toFloat().div(60)
-                                Log.d("TEST_DATE_DISPLAY", "endingMinutes: $endingMinutes")
-
-
+                            Row {
                                 Box(
                                     modifier = Modifier
-                                        .weight(1f)
-                                        .padding(
-                                            start = 50.dp,
-                                            top = if (startingHour > 1) {
-                                                (50.dp * (startingHour + startingMinutes)) - 10.dp
-                                            } else {
-                                                40.dp
-                                            }
-                                        )
-                                        .height(50.dp * ((endingHour - (startingHour + startingMinutes)) + endingMinutes))
-                                        .background(
-                                            color = Color.Red,
-                                            shape = RoundedCornerShape(32.dp)
-                                        )
-                                        .padding(8.dp)
-                                ) {
-                                    Text(text = "Event")
+                                        .width(50.dp)
+                                )
+                                state.listOfEventsFromCurrentDay.forEach {
+                                    DayEventItem(
+                                        calendarEventDto = it,
+                                        currentDay = state.selectedDate.day,
+                                        modifier = Modifier.weight(1f)
+                                    )
                                 }
                             }
                         }
@@ -282,7 +240,6 @@ fun DayScreen(
             }
         }
     }
-
     // TODO
 }
 

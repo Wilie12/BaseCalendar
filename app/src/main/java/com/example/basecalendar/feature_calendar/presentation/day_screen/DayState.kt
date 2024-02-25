@@ -5,6 +5,7 @@ import com.example.basecalendar.feature_calendar.data.util.CalendarDate
 
 data class DayState(
     val listOfEvents: List<CalendarEventDto> = emptyList(),
+    val listOfEventsFromCurrentDay: List<CalendarEventDto> = emptyList(),
     val selectedDate: CalendarDate = CalendarDate(
         day = 1,
         month = 0,
