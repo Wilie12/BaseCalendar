@@ -32,11 +32,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -63,17 +61,17 @@ fun MainScreen(
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    var selectedItemIndex by remember { mutableIntStateOf(1) }
+    val selectedItemIndex = remember { mutableIntStateOf(1) }
 
     ModalNavigationDrawer(
         drawerContent = {
             DrawerSheet(
                 navController = navController,
-                selectedItemIndex = selectedItemIndex,
+                selectedItemIndex = selectedItemIndex.intValue,
                 scope = scope,
                 state = drawerState
             ) {
-                selectedItemIndex = it
+                selectedItemIndex.intValue = it
             }
         },
         drawerState = drawerState

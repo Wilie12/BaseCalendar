@@ -21,6 +21,17 @@ class DayViewModel @Inject constructor(
 
     init {
         getCurrentDate()
+        viewModelScope.launch {
+            getAllCalendarEventsFromCurrentMonth(
+                selectedMonth = state.value.selectedDate.month,
+                selectedYear = state.value.selectedDate.year
+            )
+            setFullCalendar(
+                selectedMonth = state.value.selectedDate.month,
+                selectedYear = state.value.selectedDate.year
+            )
+            getCalendarEventsFromCurrentDay(state.value.selectedDate.day)
+        }
     }
 
     fun onEvent(event: DayEvent) {
@@ -37,19 +48,34 @@ class DayViewModel @Inject constructor(
                 var selectedYear = state.value.selectedDate.year
 
                 if (previousDay < 1) {
-                    if (previousMonth >= 0) {
+                    if (previousMonth >= Calendar.JANUARY) {
                         selectedMonth = previousMonth
                         c.set(Calendar.MONTH, selectedMonth)
                         c.set(Calendar.YEAR, selectedYear)
                         previousDay = c.getActualMaximum(Calendar.DAY_OF_MONTH)
-                    }
-                    else {
-                        previousMonth = 11
+                    } else {
+                        previousMonth = Calendar.DECEMBER
                         selectedMonth = previousMonth
                         selectedYear = previousYear
                         c.set(Calendar.MONTH, selectedMonth)
                         c.set(Calendar.YEAR, selectedYear)
                         previousDay = c.getActualMaximum(Calendar.DAY_OF_MONTH)
+                    }
+                } else {
+                    c.set(Calendar.MONTH, selectedMonth)
+                    c.set(Calendar.YEAR, selectedYear)
+                }
+
+                if (selectedMonth != state.value.selectedDate.month || selectedYear != state.value.selectedDate.year) {
+                    viewModelScope.launch {
+                        getAllCalendarEventsFromCurrentMonth(
+                            selectedMonth = selectedMonth,
+                            selectedYear = selectedYear
+                        )
+                        setFullCalendar(
+                            selectedMonth = selectedMonth,
+                            selectedYear = selectedYear
+                        )
                     }
                 }
 
@@ -69,6 +95,19 @@ class DayViewModel @Inject constructor(
             is DayEvent.CurrentDay -> {
 
                 val c = Calendar.getInstance()
+
+                if (state.value.currentDate.month != state.value.selectedDate.month || state.value.currentDate.year != state.value.selectedDate.year) {
+                    viewModelScope.launch {
+                        getAllCalendarEventsFromCurrentMonth(
+                            selectedMonth = state.value.currentDate.month,
+                            selectedYear = state.value.currentDate.year
+                        )
+                        setFullCalendar(
+                            selectedMonth = state.value.currentDate.month,
+                            selectedYear = state.value.currentDate.year
+                        )
+                    }
+                }
 
                 _state.value = state.value.copy(
                     selectedDate = CalendarDate(
@@ -92,22 +131,41 @@ class DayViewModel @Inject constructor(
                 var selectedMonth = state.value.selectedDate.month
                 var selectedYear = state.value.selectedDate.year
 
+                c.set(Calendar.MONTH, selectedMonth)
+                c.set(Calendar.YEAR, selectedYear)
+
                 if (nextDay > c.getActualMaximum(Calendar.DAY_OF_MONTH)) {
-                    if (nextMonth > 11) {
-                        nextMonth = 0
+                    if (nextMonth > Calendar.DECEMBER) {
+                        nextMonth = Calendar.JANUARY
                         selectedMonth = nextMonth
                         selectedYear = nextYear
                         c.set(Calendar.MONTH, selectedMonth)
                         c.set(Calendar.YEAR, selectedYear)
                         nextDay = c.getActualMinimum(Calendar.DAY_OF_MONTH)
-                    }
-                    else {
+                    } else {
                         selectedMonth = nextMonth
                         c.set(Calendar.MONTH, selectedMonth)
                         c.set(Calendar.YEAR, selectedYear)
                         nextDay = c.getActualMinimum(Calendar.DAY_OF_MONTH)
                     }
+                } else {
+                    c.set(Calendar.MONTH, selectedMonth)
+                    c.set(Calendar.YEAR, selectedYear)
                 }
+
+                if (selectedMonth != state.value.selectedDate.month || selectedYear != state.value.selectedDate.year) {
+                    viewModelScope.launch {
+                        getAllCalendarEventsFromCurrentMonth(
+                            selectedMonth = selectedMonth,
+                            selectedYear = selectedYear
+                        )
+                        setFullCalendar(
+                            selectedMonth = selectedMonth,
+                            selectedYear = selectedYear
+                        )
+                    }
+                }
+
                 c.set(Calendar.DAY_OF_MONTH, nextDay)
 
                 _state.value = state.value.copy(
@@ -120,10 +178,27 @@ class DayViewModel @Inject constructor(
                 )
                 getCalendarEventsFromCurrentDay(selectedDay = state.value.selectedDate.day)
             }
+
+            is DayEvent.SetDay -> {
+
+                val c = Calendar.getInstance()
+
+                c.set(Calendar.MONTH, state.value.selectedDate.month)
+                c.set(Calendar.YEAR, state.value.selectedDate.year)
+                c.set(Calendar.DAY_OF_MONTH, event.value)
+
+                _state.value = state.value.copy(
+                    selectedDate = CalendarDate(
+                        day = event.value,
+                        month = state.value.selectedDate.month,
+                        year = state.value.selectedDate.year
+                    ),
+                    dayOfWeek = c.get(Calendar.DAY_OF_WEEK)
+                )
+                getCalendarEventsFromCurrentDay(selectedDay = state.value.selectedDate.day)
+            }
         }
     }
-
-    // TODO
 
     private fun getCalendarEventsFromCurrentDay(
         selectedDay: Int
@@ -131,31 +206,24 @@ class DayViewModel @Inject constructor(
 
         val c = Calendar.getInstance()
 
-        viewModelScope.launch {
+        val listOfEvents = state.value.listOfEvents
+        _state.value = state.value.copy(
+            listOfEventsFromCurrentDay = listOfEvents.filter { calendarEvent ->
+                c.timeInMillis = calendarEvent.startingDate
+                val eventStartingDay = c.get(Calendar.DAY_OF_MONTH)
+                c.timeInMillis = calendarEvent.endingDate
+                val eventEndingDay = c.get(Calendar.DAY_OF_MONTH)
 
-            _state.value = state.value.copy(isLoading = true)
-
-            getAllCalendarEventsFromCurrentMonth()
-
-            val listOfEvents = state.value.listOfEvents
-            _state.value = state.value.copy(
-                listOfEventsFromCurrentDay = listOfEvents.filter { calendarEvent ->
-                    c.timeInMillis = calendarEvent.startingDate
-                    val eventStartingDay = c.get(Calendar.DAY_OF_MONTH)
-                    c.timeInMillis = calendarEvent.endingDate
-                    val eventEndingDay = c.get(Calendar.DAY_OF_MONTH)
-
-                    selectedDay in eventStartingDay..eventEndingDay
-                }
-            )
-
-            _state.value = state.value.copy(isLoading = false)
-        }
+                selectedDay in eventStartingDay..eventEndingDay
+            }
+        )
     }
 
     private fun getCurrentDate() {
 
         val currentDate = dayUseCases.getCurrentDate()
+
+        val c = Calendar.getInstance()
 
         _state.value = state.value.copy(
             selectedDate = CalendarDate(
@@ -167,18 +235,22 @@ class DayViewModel @Inject constructor(
                 day = currentDate.day,
                 month = currentDate.month,
                 year = currentDate.year
-            )
+            ),
+            dayOfWeek = c.get(Calendar.DAY_OF_WEEK)
         )
     }
 
-    private suspend fun getAllCalendarEventsFromCurrentMonth() {
+    private suspend fun getAllCalendarEventsFromCurrentMonth(
+        selectedMonth: Int,
+        selectedYear: Int
+    ) {
         val firstDayOfMonth = dayUseCases.getFirstDayOfMonthInMillis(
-            state.value.selectedDate.month,
-            state.value.selectedDate.year
+            selectedMonth,
+            selectedYear
         )
         val firstDayOfNextMonth = dayUseCases.getFirstDayOfNextMonthInMillis(
-            state.value.selectedDate.month,
-            state.value.selectedDate.year
+            selectedMonth,
+            selectedYear
         )
 
         val listOfEvents = dayUseCases.getAllCalendarEventsFromCurrentMonth(
@@ -187,6 +259,46 @@ class DayViewModel @Inject constructor(
         )
         _state.value = state.value.copy(
             listOfEvents = listOfEvents
+        )
+    }
+
+    private fun setFullCalendar(
+        selectedMonth: Int,
+        selectedYear: Int
+    ) {
+        setEmptyCalendar(
+            selectedMonth = selectedMonth,
+            selectedYear = selectedYear
+        )
+
+        if (state.value.listOfEvents.isNotEmpty()) {
+            setCalendarWithEvents()
+        }
+    }
+
+    private fun setCalendarWithEvents() {
+        val listOfDays = dayUseCases.getCalendarWithEvents(
+            listOfDays = state.value.listOfDays,
+            listOfEvents = state.value.listOfEvents
+        )
+
+        _state.value = state.value.copy(
+            listOfDays = listOfDays
+        )
+    }
+
+    private fun setEmptyCalendar(
+        selectedMonth: Int,
+        selectedYear: Int
+    ) {
+
+        val listOfDays = dayUseCases.getEmptyCalendar(
+            selectedMonth,
+            selectedYear
+        )
+
+        _state.value = state.value.copy(
+            listOfDays = listOfDays
         )
     }
 }

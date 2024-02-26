@@ -5,4 +5,6 @@ sealed class DayEvent {
     object PreviousDay: DayEvent()
     object CurrentDay: DayEvent()
     object NextDay: DayEvent()
+
+    data class SetDay(val value: Int): DayEvent()
 }

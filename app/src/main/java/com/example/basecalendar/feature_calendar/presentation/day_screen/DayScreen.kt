@@ -1,5 +1,6 @@
 package com.example.basecalendar.feature_calendar.presentation.day_screen
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -34,11 +35,13 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -49,6 +52,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.basecalendar.R
 import com.example.basecalendar.feature_calendar.presentation.common.DrawerSheet
+import com.example.basecalendar.feature_calendar.presentation.day_screen.components.CalendarMonthList
 import com.example.basecalendar.feature_calendar.presentation.day_screen.components.DayEventItem
 import com.example.basecalendar.feature_calendar.util.parseDayOfWeekIntToString
 import com.example.basecalendar.feature_calendar.util.parseMonthIntToString
@@ -67,6 +71,7 @@ fun DayScreen(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItemIndex by remember { mutableIntStateOf(0) }
+    val isMonthListExpanded = remember { mutableStateOf(false) }
 
     ModalNavigationDrawer(
         drawerContent = {
@@ -85,9 +90,21 @@ fun DayScreen(
             topBar = {
                 TopAppBar(
                     title = {
-                        Text(
-                            text = "${parseMonthIntToString(state.selectedDate.month)} " + if (state.selectedDate.year != 2024) "${state.selectedDate.year}" else ""
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.clickable {
+                                isMonthListExpanded.value = !isMonthListExpanded.value
+                            }
+                        ) {
+                            Text(
+                                text = "${parseMonthIntToString(state.selectedDate.month)} " + if (state.selectedDate.year != 2024) "${state.selectedDate.year}" else "")
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_today),
+                                contentDescription = if (isMonthListExpanded.value) "Close" else "Expand",
+                                modifier = Modifier
+                                    .rotate(if (isMonthListExpanded.value) 180f else 0f)
+                            )
+                        }
                     },
                     navigationIcon = {
                         IconButton(onClick = {
@@ -136,6 +153,7 @@ fun DayScreen(
                 )
             }
         ) { innerPadding ->
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -148,6 +166,15 @@ fun DayScreen(
                             .fillMaxWidth()
                             .padding(innerPadding)
                     ) {
+                        AnimatedVisibility(visible = isMonthListExpanded.value) {
+                            CalendarMonthList(
+                                listOfDays = state.listOfDays,
+                                currentDay = state.selectedDate.day,
+                                onClick = {
+                                    onEvent(DayEvent.SetDay(it))
+                                },
+                            )
+                        }
                         Row(
                             modifier = Modifier.padding(horizontal = 8.dp)
                         ) {
@@ -171,16 +198,24 @@ fun DayScreen(
                             Column(
                                 modifier = Modifier.weight(1f)
                             ) {
-                                Text(
-                                    text = "Giga event",
-                                    fontSize = 14.sp,
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(
-                                            shape = RoundedCornerShape(32.dp),
-                                            color = Color.Red
-                                        )
-                                )
+
+                                val listOfWholeDayEvents =
+                                    remember(state.listOfEventsFromCurrentDay) {
+                                        state.listOfEventsFromCurrentDay.filter { it.isTakingWholeDay }
+                                    }
+
+                                listOfWholeDayEvents.forEach { calendarEvent ->
+                                    Text(
+                                        text = calendarEvent.title,
+                                        fontSize = 14.sp,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(
+                                                shape = RoundedCornerShape(32.dp),
+                                                color = Color(calendarEvent.color)
+                                            )
+                                    )
+                                }
                             }
                         }
                         Divider()
@@ -235,7 +270,10 @@ fun DayScreen(
                     modifier = Modifier
                         .fillMaxHeight()
                         .width(1.dp)
-                        .offset(x = 58.dp)
+                        .offset(
+                            x = 58.dp,
+                            y = if (isMonthListExpanded.value) 250.dp else 0.dp
+                        )
                 )
             }
         }

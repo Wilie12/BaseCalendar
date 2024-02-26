@@ -2,6 +2,7 @@ package com.example.basecalendar.feature_calendar.presentation.day_screen
 
 import com.example.basecalendar.feature_calendar.data.local_data_source.dto.CalendarEventDto
 import com.example.basecalendar.feature_calendar.data.util.CalendarDate
+import com.example.basecalendar.feature_calendar.domain.model.CalendarDay
 
 data class DayState(
     val listOfEvents: List<CalendarEventDto> = emptyList(),
@@ -17,5 +18,6 @@ data class DayState(
         year = 2000
     ),
     val dayOfWeek: Int = 1,
+    val listOfDays: List<CalendarDay> = emptyList(),
     val isLoading: Boolean = false
 )

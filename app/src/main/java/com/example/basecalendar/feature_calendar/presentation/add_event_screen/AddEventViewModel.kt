@@ -5,11 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.basecalendar.feature_calendar.data.local_data_source.dto.CalendarEventDto
-import com.example.basecalendar.feature_calendar.data.util.Constants
 import com.example.basecalendar.feature_calendar.domain.use_case.add_event.AddEventUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -96,7 +94,7 @@ class AddEventViewModel @Inject constructor(
 
             AddEventEvent.SaveEvent -> {
                 viewModelScope.launch {
-                    if (state.value.endingDate > state.value.startingDate) {
+                    if (state.value.endingDate > state.value.startingDate || state.value.isTakingWholeDay) {
                         addEventUseCases.addEvent(
                             CalendarEventDto(
                                 id = 0,
