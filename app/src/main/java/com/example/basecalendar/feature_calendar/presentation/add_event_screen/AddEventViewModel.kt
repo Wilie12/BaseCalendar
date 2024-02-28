@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.basecalendar.feature_calendar.data.local_data_source.dto.CalendarEventDto
+import com.example.basecalendar.feature_calendar.data.util.RepeatMode
 import com.example.basecalendar.feature_calendar.domain.use_case.add_event.AddEventUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -76,7 +77,8 @@ class AddEventViewModel @Inject constructor(
 
             is AddEventEvent.ChangeRepeatMode -> {
                 _state.value = state.value.copy(
-                    repeatMode = event.value
+                    repeatMode = event.value,
+                    isRepeating = (event.value != RepeatMode.NONE)
                 )
             }
 

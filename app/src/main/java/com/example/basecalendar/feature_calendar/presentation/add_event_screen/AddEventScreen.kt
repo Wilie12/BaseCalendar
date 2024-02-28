@@ -202,7 +202,6 @@ fun AddEventScreen(
             onDismiss = { showColorDialog.value = false }
         )
     }
-    // TODO - find and fix timePicker bugs
     // TODO - finish screen
     Scaffold(
         topBar = {

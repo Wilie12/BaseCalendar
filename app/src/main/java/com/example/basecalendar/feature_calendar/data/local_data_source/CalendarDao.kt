@@ -17,4 +17,7 @@ interface CalendarDao {
         firstDayOfMonth: Long,
         firstDayOfNextMonth: Long
     ): List<CalendarEventDto>
+
+    @Query("SELECT * FROM calendar_event_table")
+    suspend fun getAllCalendarEvents(): List<CalendarEventDto>
 }

@@ -7,6 +7,7 @@ import com.example.basecalendar.feature_calendar.domain.model.CalendarDay
 data class MainState(
     val listOfDays: List<CalendarDay> = emptyList(),
     val listOfEvents: List<CalendarEventDto> = emptyList(),
+    val listOfEventsFromCurrentMonth: List<CalendarEventDto> = emptyList(),
     val selectedDate: CalendarDate = CalendarDate(
         day = 0,
         month = 0,

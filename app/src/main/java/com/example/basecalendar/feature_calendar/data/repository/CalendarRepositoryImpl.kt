@@ -21,4 +21,8 @@ class CalendarRepositoryImpl(
             firstDayOfNextMonth = firstDayOfNextMonth
         )
     }
+
+    override suspend fun getAllCalendarEvents(): List<CalendarEventDto> {
+        return calendarDao.getAllCalendarEvents()
+    }
 }

@@ -97,7 +97,8 @@ fun DayScreen(
                             }
                         ) {
                             Text(
-                                text = "${parseMonthIntToString(state.selectedDate.month)} " + if (state.selectedDate.year != 2024) "${state.selectedDate.year}" else "")
+                                text = "${parseMonthIntToString(state.selectedDate.month)} " + if (state.selectedDate.year != 2024) "${state.selectedDate.year}" else ""
+                            )
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_today),
                                 contentDescription = if (isMonthListExpanded.value) "Close" else "Expand",
@@ -278,7 +279,6 @@ fun DayScreen(
             }
         }
     }
-    // TODO
 }
 
 @Preview

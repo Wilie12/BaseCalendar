@@ -10,4 +10,6 @@ interface CalendarRepository {
         firstDayOfMonth: Long,
         firstDayOfNextMonth: Long
     ): List<CalendarEventDto>
+
+    suspend fun getAllCalendarEvents(): List<CalendarEventDto>
 }
