@@ -1,4 +1,4 @@
-package com.example.basecalendar.feature_calendar.util
+package com.example.basecalendar.feature_calendar.util.navigation
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes

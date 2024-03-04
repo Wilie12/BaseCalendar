@@ -11,5 +11,6 @@ data class AddEventState(
     val repeatMode: Int = 0,
     val reminderMode: Int = 0,
     val color: Int = Constants.blue,
-    val description: String = ""
+    val description: String = "",
+    val screenRoute: String = ""
 )

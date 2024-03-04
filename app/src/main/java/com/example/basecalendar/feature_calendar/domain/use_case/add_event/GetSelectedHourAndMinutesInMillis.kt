@@ -16,9 +16,9 @@ class GetSelectedHourAndMinutesInMillis {
         val day = c.get(Calendar.DAY_OF_MONTH)
         c.clear(Calendar.HOUR)
         c.clear(Calendar.MINUTE)
+        c.set(Calendar.DAY_OF_MONTH, day)
         c.set(Calendar.HOUR, hour)
         c.set(Calendar.MINUTE, minutes)
-        c.set(Calendar.DAY_OF_MONTH, day)
 
         return c.timeInMillis
     }

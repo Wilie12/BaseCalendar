@@ -38,7 +38,7 @@ fun CalendarDayItem(
             Text(
                 text = calendarDay.dayOfMonth.toString(),
                 textAlign = TextAlign.Center,
-                color = if (isCurrentDay) Color.White else Color.Black,
+                color = if (isCurrentDay) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)

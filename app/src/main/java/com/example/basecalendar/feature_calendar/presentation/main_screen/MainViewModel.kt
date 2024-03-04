@@ -46,7 +46,17 @@ class MainViewModel @Inject constructor(
                                 selectedYear = state.value.currentDate.year
                             )
                         }
+                    } else {
+                        setFullCalendarForSelectedMonth(
+                            selectedMonth = state.value.currentDate.month,
+                            selectedYear = state.value.currentDate.year
+                        )
                     }
+                } else {
+                    setFullCalendarForSelectedMonth(
+                        selectedMonth = state.value.currentDate.month,
+                        selectedYear = state.value.currentDate.year
+                    )
                 }
             }
 
@@ -116,7 +126,6 @@ class MainViewModel @Inject constructor(
         selectedMonth: Int,
         selectedYear: Int
     ) {
-
         setEmptyCalendar(
             selectedMonth,
             selectedYear

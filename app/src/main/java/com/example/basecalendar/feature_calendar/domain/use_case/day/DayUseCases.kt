@@ -11,7 +11,6 @@ import com.example.basecalendar.feature_calendar.domain.use_case.main.GetCalenda
 import com.example.basecalendar.feature_calendar.domain.use_case.main.GetEmptyCalendar
 
 data class DayUseCases(
-    val getAllCalendarEventsFromCurrentMonth: GetAllCalendarEventsFromCurrentMonth,
     val getFirstDayOfMonthInMillis: GetFirstDayOfMonthInMillis,
     val getFirstDayOfNextMonthInMillis: GetFirstDayOfNextMonthInMillis,
     val getCurrentDate: GetCurrentDate,

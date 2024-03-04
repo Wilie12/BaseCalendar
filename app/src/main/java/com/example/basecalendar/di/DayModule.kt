@@ -8,7 +8,6 @@ import com.example.basecalendar.feature_calendar.domain.use_case.GetFirstDayOfNe
 import com.example.basecalendar.feature_calendar.domain.use_case.GetFirstDayOfNextYearInMillis
 import com.example.basecalendar.feature_calendar.domain.use_case.GetFirstDayOfYearInMillis
 import com.example.basecalendar.feature_calendar.domain.use_case.day.DayUseCases
-import com.example.basecalendar.feature_calendar.domain.use_case.main.GetAllCalendarEventsFromCurrentMonth
 import com.example.basecalendar.feature_calendar.domain.use_case.main.GetCalendarWithEvents
 import com.example.basecalendar.feature_calendar.domain.use_case.main.GetEmptyCalendar
 import dagger.Module
@@ -28,7 +27,6 @@ object DayModule {
             getCurrentDate = GetCurrentDate(),
             getFirstDayOfNextMonthInMillis = GetFirstDayOfNextMonthInMillis(),
             getFirstDayOfMonthInMillis = GetFirstDayOfMonthInMillis(),
-            getAllCalendarEventsFromCurrentMonth = GetAllCalendarEventsFromCurrentMonth(repository),
             getEmptyCalendar = GetEmptyCalendar(),
             getCalendarWithEvents = GetCalendarWithEvents(),
             getAllCalendarEvents = GetAllCalendarEvents(repository),

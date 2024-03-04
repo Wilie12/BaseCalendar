@@ -10,7 +10,6 @@ import com.example.basecalendar.feature_calendar.domain.use_case.GetFirstDayOfYe
 data class MainUseCases(
     val getFirstDayOfMonthInMillis: GetFirstDayOfMonthInMillis,
     val getFirstDayOfNextMonthInMillis: GetFirstDayOfNextMonthInMillis,
-    val getAllCalendarEventsFromCurrentMonth: GetAllCalendarEventsFromCurrentMonth,
     val getEmptyCalendar: GetEmptyCalendar,
     val getCurrentDate: GetCurrentDate,
     val getCalendarWithEvents: GetCalendarWithEvents,

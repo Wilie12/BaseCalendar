@@ -3,8 +3,8 @@ package com.example.basecalendar.feature_calendar.data.util
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.example.basecalendar.R
-import com.example.basecalendar.feature_calendar.util.NavigationItem
-import com.example.basecalendar.feature_calendar.util.Screen
+import com.example.basecalendar.feature_calendar.util.navigation.NavigationItem
+import com.example.basecalendar.feature_calendar.util.navigation.Screen
 
 object Constants {
 

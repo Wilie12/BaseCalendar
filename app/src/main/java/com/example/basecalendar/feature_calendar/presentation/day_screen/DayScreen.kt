@@ -20,10 +20,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -54,8 +56,9 @@ import com.example.basecalendar.R
 import com.example.basecalendar.feature_calendar.presentation.common.DrawerSheet
 import com.example.basecalendar.feature_calendar.presentation.day_screen.components.CalendarMonthList
 import com.example.basecalendar.feature_calendar.presentation.day_screen.components.DayEventItem
-import com.example.basecalendar.feature_calendar.util.parseDayOfWeekIntToString
-import com.example.basecalendar.feature_calendar.util.parseMonthIntToString
+import com.example.basecalendar.feature_calendar.util.navigation.Screen
+import com.example.basecalendar.feature_calendar.util.parsers.parseDayOfWeekIntToString
+import com.example.basecalendar.feature_calendar.util.parsers.parseMonthIntToString
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -152,6 +155,18 @@ fun DayScreen(
                         }
                     }
                 )
+            },
+            floatingActionButton = {
+                FloatingActionButton(onClick = {
+                    navController.navigate(
+                        Screen.AddEventScreen.route + "/${Screen.DayScreen.route}"
+                    )
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add"
+                    )
+                }
             }
         ) { innerPadding ->
 
@@ -264,6 +279,7 @@ fun DayScreen(
                                     )
                                 }
                             }
+                            // TODO - add current hour display divider
                         }
                     }
                 }

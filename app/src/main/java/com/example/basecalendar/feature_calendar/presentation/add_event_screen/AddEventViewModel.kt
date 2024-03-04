@@ -2,6 +2,7 @@ package com.example.basecalendar.feature_calendar.presentation.add_event_screen
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.basecalendar.feature_calendar.data.local_data_source.dto.CalendarEventDto
@@ -13,7 +14,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddEventViewModel @Inject constructor(
-    private val addEventUseCases: AddEventUseCases
+    private val addEventUseCases: AddEventUseCases,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _state = mutableStateOf(AddEventState())
@@ -21,6 +23,7 @@ class AddEventViewModel @Inject constructor(
 
     init {
         getCurrentStartingAndEndingDate()
+        setStateScreenRoute(checkNotNull(savedStateHandle["screen"]))
     }
 
     fun onEvent(event: AddEventEvent) {
@@ -115,6 +118,12 @@ class AddEventViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun setStateScreenRoute(route: String) {
+        _state.value = state.value.copy(
+            screenRoute = route
+        )
     }
 
     private fun getCurrentStartingAndEndingDate() {

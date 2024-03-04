@@ -1,6 +1,4 @@
-package com.example.basecalendar.feature_calendar.util
-
-import com.example.basecalendar.R
+package com.example.basecalendar.feature_calendar.util.navigation
 
 sealed class Screen(val route: String) {
     object MainScreen: Screen("main_screen")

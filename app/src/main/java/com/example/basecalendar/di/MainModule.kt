@@ -7,7 +7,6 @@ import com.example.basecalendar.feature_calendar.domain.use_case.GetFirstDayOfMo
 import com.example.basecalendar.feature_calendar.domain.use_case.GetFirstDayOfNextMonthInMillis
 import com.example.basecalendar.feature_calendar.domain.use_case.GetFirstDayOfNextYearInMillis
 import com.example.basecalendar.feature_calendar.domain.use_case.GetFirstDayOfYearInMillis
-import com.example.basecalendar.feature_calendar.domain.use_case.main.GetAllCalendarEventsFromCurrentMonth
 import com.example.basecalendar.feature_calendar.domain.use_case.main.GetCalendarWithEvents
 import com.example.basecalendar.feature_calendar.domain.use_case.main.GetEmptyCalendar
 import com.example.basecalendar.feature_calendar.domain.use_case.main.MainUseCases
@@ -27,7 +26,6 @@ object MainModule {
         return MainUseCases(
             getFirstDayOfMonthInMillis = GetFirstDayOfMonthInMillis(),
             getFirstDayOfNextMonthInMillis = GetFirstDayOfNextMonthInMillis(),
-            getAllCalendarEventsFromCurrentMonth = GetAllCalendarEventsFromCurrentMonth(repository),
             getEmptyCalendar = GetEmptyCalendar(),
             getCurrentDate = GetCurrentDate(),
             getCalendarWithEvents = GetCalendarWithEvents(),

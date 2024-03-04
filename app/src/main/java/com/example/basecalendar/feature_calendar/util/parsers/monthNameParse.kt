@@ -1,4 +1,4 @@
-package com.example.basecalendar.feature_calendar.util
+package com.example.basecalendar.feature_calendar.util.parsers
 
 fun parseMonthIntToString(monthInt: Int): String {
     return when(monthInt) {

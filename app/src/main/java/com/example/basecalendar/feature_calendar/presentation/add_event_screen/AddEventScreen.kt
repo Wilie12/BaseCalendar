@@ -51,9 +51,9 @@ import com.example.basecalendar.feature_calendar.presentation.add_event_screen.c
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.components.RadioOptionsDialog
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.components.TimePickerDialog
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.components.TimeText
-import com.example.basecalendar.feature_calendar.util.parseColorIntToString
-import com.example.basecalendar.feature_calendar.util.parseReminderModeIntToName
-import com.example.basecalendar.feature_calendar.util.parseRepeatModeIntToString
+import com.example.basecalendar.feature_calendar.util.parsers.parseColorIntToString
+import com.example.basecalendar.feature_calendar.util.parsers.parseReminderModeIntToName
+import com.example.basecalendar.feature_calendar.util.parsers.parseRepeatModeIntToString
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -202,7 +202,6 @@ fun AddEventScreen(
             onDismiss = { showColorDialog.value = false }
         )
     }
-    // TODO - finish screen
     Scaffold(
         topBar = {
             TopAppBar(
@@ -217,8 +216,13 @@ fun AddEventScreen(
                 },
                 actions = {
                     TextButton(onClick = {
-                        if (state.title.isNotEmpty() && state.description.isNotEmpty()) {
+                        if (state.title.isNotEmpty()) {
                             onEvent(AddEventEvent.SaveEvent)
+                            navController.navigate(state.screenRoute) {
+                                popUpTo(state.screenRoute) {
+                                    inclusive = true
+                                }
+                            }
                         }
                     }) {
                         Text(

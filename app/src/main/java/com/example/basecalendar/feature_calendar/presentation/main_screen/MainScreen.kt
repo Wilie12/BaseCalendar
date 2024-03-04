@@ -46,8 +46,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.basecalendar.R
 import com.example.basecalendar.feature_calendar.presentation.common.DrawerSheet
 import com.example.basecalendar.feature_calendar.presentation.main_screen.components.CalendarDayItem
-import com.example.basecalendar.feature_calendar.util.Screen
-import com.example.basecalendar.feature_calendar.util.parseMonthIntToString
+import com.example.basecalendar.feature_calendar.util.navigation.Screen
+import com.example.basecalendar.feature_calendar.util.parsers.parseMonthIntToString
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -132,14 +132,16 @@ fun MainScreen(
             },
             floatingActionButton = {
                 FloatingActionButton(onClick = {
-                    navController.navigate(Screen.AddEventScreen.route)
+                    navController.navigate(
+                        Screen.AddEventScreen.route + "/${Screen.MainScreen.route}"
+                    )
                 }) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "Add"
                     )
                 }
-            },
+            }
         ) { innerPadding ->
             Column(
                 modifier = Modifier

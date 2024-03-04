@@ -1,4 +1,4 @@
-package com.example.basecalendar.feature_calendar.util
+package com.example.basecalendar.feature_calendar.util.parsers
 
 import java.util.Calendar
 
