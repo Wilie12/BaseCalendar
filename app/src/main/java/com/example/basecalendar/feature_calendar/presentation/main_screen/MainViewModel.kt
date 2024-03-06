@@ -13,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val mainUseCases: MainUseCases
+    private val mainUseCases: MainUseCases,
 ) : ViewModel() {
 
     private val _state = mutableStateOf(MainState())
@@ -37,22 +37,15 @@ class MainViewModel @Inject constructor(
     fun onEvent(event: MainEvent) {
         when (event) {
             MainEvent.CurrentMonth -> {
-                if (state.value.currentDate.month != state.value.selectedDate.month) {
-                    if (state.value.currentDate.year != state.value.selectedDate.year) {
-                        viewModelScope.launch {
-                            getAllEvents(state.value.currentDate.year)
-                            setFullCalendarForSelectedMonth(
-                                selectedMonth = state.value.currentDate.month,
-                                selectedYear = state.value.currentDate.year
-                            )
-                        }
-                    } else {
+                if (state.value.currentDate.year != state.value.selectedDate.year) {
+                    viewModelScope.launch {
+                        getAllEvents(state.value.currentDate.year)
                         setFullCalendarForSelectedMonth(
                             selectedMonth = state.value.currentDate.month,
                             selectedYear = state.value.currentDate.year
                         )
                     }
-                } else {
+                } else if (state.value.currentDate.month != state.value.selectedDate.month) {
                     setFullCalendarForSelectedMonth(
                         selectedMonth = state.value.currentDate.month,
                         selectedYear = state.value.currentDate.year
@@ -213,11 +206,10 @@ class MainViewModel @Inject constructor(
     private suspend fun getAllEvents(
         selectedYear: Int
     ) {
-        val listOfEvents = mainUseCases.getAllCalendarEvents(
+        val listOfEvents = mainUseCases.getAllCalendarEventsFromCurrentYear(
             firstDayOfYear = mainUseCases.getFirstDayOfYearInMillis(selectedYear),
             firstDayOfNextYear = mainUseCases.getFirstDayOfNextYearInMillis(selectedYear)
         )
-
         _state.value = state.value.copy(
             listOfEvents = listOfEvents
         )

@@ -1,6 +1,6 @@
 package com.example.basecalendar.feature_calendar.domain.use_case.main
 
-import com.example.basecalendar.feature_calendar.domain.use_case.GetAllCalendarEvents
+import com.example.basecalendar.feature_calendar.domain.use_case.GetAllCalendarEventsFromCurrentYear
 import com.example.basecalendar.feature_calendar.domain.use_case.GetCurrentDate
 import com.example.basecalendar.feature_calendar.domain.use_case.GetFirstDayOfMonthInMillis
 import com.example.basecalendar.feature_calendar.domain.use_case.GetFirstDayOfNextMonthInMillis
@@ -13,7 +13,7 @@ data class MainUseCases(
     val getEmptyCalendar: GetEmptyCalendar,
     val getCurrentDate: GetCurrentDate,
     val getCalendarWithEvents: GetCalendarWithEvents,
-    val getAllCalendarEvents: GetAllCalendarEvents,
+    val getAllCalendarEventsFromCurrentYear: GetAllCalendarEventsFromCurrentYear,
     val getFirstDayOfYearInMillis: GetFirstDayOfYearInMillis,
     val getFirstDayOfNextYearInMillis: GetFirstDayOfNextYearInMillis
 )

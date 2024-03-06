@@ -68,6 +68,7 @@ fun CalendarDayItem(
                     for (i in 1..(5 - calendarDay.listOfEvents.size)) {
                         Text(
                             text = "",
+                            fontSize = 14.sp,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -78,6 +79,7 @@ fun CalendarDayItem(
                     for(i in 1..5) {
                         Text(
                             text = "",
+                            fontSize = 14.sp,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
                         )

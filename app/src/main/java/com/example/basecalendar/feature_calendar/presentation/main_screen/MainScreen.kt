@@ -1,6 +1,5 @@
 package com.example.basecalendar.feature_calendar.presentation.main_screen
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -173,21 +172,19 @@ fun MainScreen(
                     }
                 }
                 Divider(modifier = Modifier.fillMaxWidth())
-                AnimatedVisibility(visible = !state.isLoading) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Fixed(7),
-                        verticalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxHeight()
-                    ) {
-                        items(state.listOfDays) {
-                            CalendarDayItem(
-                                calendarDay = it,
-                                isCurrentDay = it.dayOfMonth == state.currentDate.day &&
-                                        state.currentDate.year == state.selectedDate.year &&
-                                        state.currentDate.month == state.selectedDate.month
-                            )
-                            Divider(modifier = Modifier.fillMaxWidth())
-                        }
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(7),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxHeight()
+                ) {
+                    items(state.listOfDays) {
+                        CalendarDayItem(
+                            calendarDay = it,
+                            isCurrentDay = it.dayOfMonth == state.currentDate.day &&
+                                    state.currentDate.year == state.selectedDate.year &&
+                                    state.currentDate.month == state.selectedDate.month
+                        )
+                        Divider(modifier = Modifier.fillMaxWidth())
                     }
                 }
             }

@@ -191,21 +191,23 @@ class DayViewModel @Inject constructor(
 
             is DayEvent.SetDay -> {
 
-                val c = Calendar.getInstance()
+                if (event.value > 0) {
+                    val c = Calendar.getInstance()
 
-                c.set(Calendar.MONTH, state.value.selectedDate.month)
-                c.set(Calendar.YEAR, state.value.selectedDate.year)
-                c.set(Calendar.DAY_OF_MONTH, event.value)
+                    c.set(Calendar.MONTH, state.value.selectedDate.month)
+                    c.set(Calendar.YEAR, state.value.selectedDate.year)
+                    c.set(Calendar.DAY_OF_MONTH, event.value)
 
-                _state.value = state.value.copy(
-                    selectedDate = CalendarDate(
-                        day = event.value,
-                        month = state.value.selectedDate.month,
-                        year = state.value.selectedDate.year
-                    ),
-                    dayOfWeek = c.get(Calendar.DAY_OF_WEEK)
-                )
-                getCalendarEventsFromCurrentDay(selectedDay = state.value.selectedDate.day)
+                    _state.value = state.value.copy(
+                        selectedDate = CalendarDate(
+                            day = event.value,
+                            month = state.value.selectedDate.month,
+                            year = state.value.selectedDate.year
+                        ),
+                        dayOfWeek = c.get(Calendar.DAY_OF_WEEK)
+                    )
+                    getCalendarEventsFromCurrentDay(selectedDay = state.value.selectedDate.day)
+                }
             }
         }
     }
@@ -319,7 +321,7 @@ class DayViewModel @Inject constructor(
     private suspend fun getAllEvents(
         selectedYear: Int
     ) {
-        val listOfEvents = dayUseCases.getAllCalendarEvents(
+        val listOfEvents = dayUseCases.getAllCalendarEventsFromCurrentYear(
             firstDayOfYear = dayUseCases.getFirstDayOfYearInMillis(selectedYear),
             firstDayOfNextYear = dayUseCases.getFirstDayOfNextYearInMillis(selectedYear)
         )

@@ -4,7 +4,7 @@ import com.example.basecalendar.feature_calendar.data.local_data_source.dto.Cale
 import com.example.basecalendar.feature_calendar.data.util.RepeatMode
 import com.example.basecalendar.feature_calendar.domain.repository.CalendarRepository
 
-class GetAllCalendarEvents(
+class GetAllCalendarEventsFromCurrentYear(
     private val repository: CalendarRepository
 ) {
     suspend operator fun invoke(

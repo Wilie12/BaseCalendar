@@ -2,6 +2,8 @@ package com.example.basecalendar.di
 
 import android.app.Application
 import androidx.room.Room
+import com.example.basecalendar.feature_calendar.data.alarm.AlarmScheduler
+import com.example.basecalendar.feature_calendar.data.alarm.AlarmSchedulerImpl
 import com.example.basecalendar.feature_calendar.data.local_data_source.CalendarDatabase
 import com.example.basecalendar.feature_calendar.data.repository.CalendarRepositoryImpl
 import com.example.basecalendar.feature_calendar.domain.repository.CalendarRepository
@@ -29,5 +31,11 @@ object AppModule {
     @Singleton
     fun provideCalendarRepository(db: CalendarDatabase): CalendarRepository {
         return CalendarRepositoryImpl(db.calendarDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAlarmScheduler(app: Application): AlarmScheduler {
+        return AlarmSchedulerImpl(app.applicationContext)
     }
 }

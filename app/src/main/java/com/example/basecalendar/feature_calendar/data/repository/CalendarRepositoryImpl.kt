@@ -3,6 +3,7 @@ package com.example.basecalendar.feature_calendar.data.repository
 import com.example.basecalendar.feature_calendar.data.local_data_source.CalendarDao
 import com.example.basecalendar.feature_calendar.data.local_data_source.dto.CalendarEventDto
 import com.example.basecalendar.feature_calendar.domain.repository.CalendarRepository
+import javax.inject.Inject
 
 class CalendarRepositoryImpl(
     private val calendarDao: CalendarDao

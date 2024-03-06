@@ -1,7 +1,7 @@
 package com.example.basecalendar.di
 
 import com.example.basecalendar.feature_calendar.domain.repository.CalendarRepository
-import com.example.basecalendar.feature_calendar.domain.use_case.GetAllCalendarEvents
+import com.example.basecalendar.feature_calendar.domain.use_case.GetAllCalendarEventsFromCurrentYear
 import com.example.basecalendar.feature_calendar.domain.use_case.GetCurrentDate
 import com.example.basecalendar.feature_calendar.domain.use_case.GetFirstDayOfMonthInMillis
 import com.example.basecalendar.feature_calendar.domain.use_case.GetFirstDayOfNextMonthInMillis
@@ -29,7 +29,7 @@ object DayModule {
             getFirstDayOfMonthInMillis = GetFirstDayOfMonthInMillis(),
             getEmptyCalendar = GetEmptyCalendar(),
             getCalendarWithEvents = GetCalendarWithEvents(),
-            getAllCalendarEvents = GetAllCalendarEvents(repository),
+            getAllCalendarEventsFromCurrentYear = GetAllCalendarEventsFromCurrentYear(repository),
             getFirstDayOfYearInMillis = GetFirstDayOfYearInMillis(),
             getFirstDayOfNextYearInMillis = GetFirstDayOfNextYearInMillis()
         )
