@@ -10,6 +10,7 @@ import com.example.basecalendar.feature_calendar.data.util.RepeatMode
 import com.example.basecalendar.feature_calendar.domain.use_case.add_event.AddEventUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
@@ -41,8 +42,16 @@ class AddEventViewModel @Inject constructor(
             }
 
             is AddEventEvent.ChangeEndingDate -> {
+                val c = Calendar.getInstance()
+                c.timeInMillis = state.value.endingDate
+                val hour = c.get(Calendar.HOUR_OF_DAY)
+                val minutes = c.get(Calendar.MINUTE)
+
+                c.timeInMillis = event.value
+                c.set(Calendar.HOUR_OF_DAY, hour)
+                c.set(Calendar.MINUTE, minutes)
                 _state.value = state.value.copy(
-                    endingDate = event.value
+                    endingDate = c.timeInMillis
                 )
             }
 
@@ -86,8 +95,17 @@ class AddEventViewModel @Inject constructor(
             }
 
             is AddEventEvent.ChangeStartingDate -> {
+
+                val c = Calendar.getInstance()
+                c.timeInMillis = state.value.startingDate
+                val hour = c.get(Calendar.HOUR_OF_DAY)
+                val minutes = c.get(Calendar.MINUTE)
+
+                c.timeInMillis = event.value
+                c.set(Calendar.HOUR_OF_DAY, hour)
+                c.set(Calendar.MINUTE, minutes)
                 _state.value = state.value.copy(
-                    startingDate = event.value
+                    startingDate = c.timeInMillis
                 )
             }
 

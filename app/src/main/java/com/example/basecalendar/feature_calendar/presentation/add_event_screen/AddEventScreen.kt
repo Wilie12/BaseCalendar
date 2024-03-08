@@ -54,6 +54,8 @@ import com.example.basecalendar.feature_calendar.presentation.add_event_screen.c
 import com.example.basecalendar.feature_calendar.util.parsers.parseColorIntToString
 import com.example.basecalendar.feature_calendar.util.parsers.parseReminderModeIntToName
 import com.example.basecalendar.feature_calendar.util.parsers.parseRepeatModeIntToString
+import java.util.Calendar
+import kotlin.time.Duration.Companion.hours
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,11 +65,20 @@ fun AddEventScreen(
     navController: NavController
 ) {
     val scrollState = rememberScrollState()
+    val c = Calendar.getInstance()
 
     val startingDatePickerState = rememberDatePickerState()
     val endingDatePickerState = rememberDatePickerState()
-    val startingTimePickerState = rememberTimePickerState()
-    val endingTimePickerState = rememberTimePickerState()
+    val startingTimePickerState = rememberTimePickerState(
+        is24Hour = true,
+        initialHour = c.get(Calendar.HOUR_OF_DAY),
+        initialMinute = c.get(Calendar.MINUTE)
+    )
+    val endingTimePickerState = rememberTimePickerState(
+        is24Hour = true,
+        initialHour = c.get(Calendar.HOUR_OF_DAY) + 1,
+        initialMinute = c.get(Calendar.MINUTE)
+    )
 
     val showStartingDateDialog = rememberSaveable { mutableStateOf(false) }
     val showEndingDateDialog = rememberSaveable { mutableStateOf(false) }

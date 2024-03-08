@@ -24,12 +24,23 @@ fun CalendarDayItem(
     isCurrentDay: Boolean
 ) {
     if (calendarDay.isEmpty) {
-        Text(
-            text = "",
-            textAlign = TextAlign.Center,
-            modifier = Modifier
-                .padding(8.dp)
-        )
+
+        Column {
+            Text(
+                text = "",
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .padding(8.dp)
+            )
+            for(i in 1..5) {
+                Text(
+                    text = "",
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
     } else {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
