@@ -13,3 +13,15 @@ fun parseReminderModeIntToName(reminderMode: Int): String {
         else -> "Something went wrong..."
     }
 }
+
+fun parseReminderModeIntToNameNotification(reminderMode: Int): String {
+    return when (reminderMode) {
+        ReminderMode.NONE -> "Don't reminder"
+        ReminderMode.MINUTES_5 -> "5 minutes"
+        ReminderMode.MINUTES_10 -> "10 minutes"
+        ReminderMode.MINUTES_15 -> "15 minutes"
+        ReminderMode.HOUR_1 -> "1 hour"
+        ReminderMode.DAY_1 -> "1 day"
+        else -> "Something went wrong..."
+    }
+}

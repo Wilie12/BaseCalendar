@@ -5,7 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.basecalendar.feature_calendar.data.alarm.AlarmItem
+import com.example.basecalendar.feature_calendar.data.alarm.AlarmScheduler
 import com.example.basecalendar.feature_calendar.data.local_data_source.dto.CalendarEventDto
+import com.example.basecalendar.feature_calendar.data.util.ReminderMode
 import com.example.basecalendar.feature_calendar.data.util.RepeatMode
 import com.example.basecalendar.feature_calendar.domain.use_case.add_event.AddEventUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,6 +24,9 @@ class AddEventViewModel @Inject constructor(
 
     private val _state = mutableStateOf(AddEventState())
     val state: State<AddEventState> = _state
+
+    @Inject
+    lateinit var alarmScheduler: AlarmScheduler
 
     init {
         getCurrentStartingAndEndingDate()
@@ -115,6 +121,7 @@ class AddEventViewModel @Inject constructor(
                 )
             }
 
+            // TODO - set isTakingWholeDayEvents starting date to 00:00
             AddEventEvent.SaveEvent -> {
                 viewModelScope.launch {
                     if (state.value.endingDate > state.value.startingDate || state.value.isTakingWholeDay) {
@@ -132,6 +139,15 @@ class AddEventViewModel @Inject constructor(
                                 reminderMode = state.value.reminderMode
                             )
                         )
+                        if (state.value.reminderMode != ReminderMode.NONE) {
+                            scheduleAlarmItem(
+                                AlarmItem(
+                                    time = state.value.startingDate,
+                                    title = state.value.title,
+                                    reminderMode = state.value.reminderMode
+                                )
+                            )
+                        }
                     }
                 }
             }
@@ -149,5 +165,10 @@ class AddEventViewModel @Inject constructor(
             startingDate = System.currentTimeMillis(),
             endingDate = System.currentTimeMillis() + 3600000
         )
+    }
+
+
+    private fun scheduleAlarmItem(item: AlarmItem) {
+        alarmScheduler.schedule(item)
     }
 }

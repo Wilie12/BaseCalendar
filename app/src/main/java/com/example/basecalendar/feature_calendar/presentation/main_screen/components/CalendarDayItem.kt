@@ -43,7 +43,6 @@ fun CalendarDayItem(
         }
     } else {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.clickable {  }
         ) {
             Text(
@@ -73,7 +72,9 @@ fun CalendarDayItem(
                                     color = Color(event.color),
                                     shape = CircleShape
                                 )
-                                .clickable {  }
+                                .clickable {
+                                    // TODO - navigation to day screen
+                                }
                         )
                     }
                     for (i in 1..(5 - calendarDay.listOfEvents.size)) {

@@ -1,9 +1,12 @@
 package com.example.basecalendar.di
 
 import android.app.Application
+import androidx.room.PrimaryKey
 import androidx.room.Room
 import com.example.basecalendar.feature_calendar.data.alarm.AlarmScheduler
 import com.example.basecalendar.feature_calendar.data.alarm.AlarmSchedulerImpl
+import com.example.basecalendar.feature_calendar.data.alarm.NotificationScheduler
+import com.example.basecalendar.feature_calendar.data.alarm.NotificationSchedulerImpl
 import com.example.basecalendar.feature_calendar.data.local_data_source.CalendarDatabase
 import com.example.basecalendar.feature_calendar.data.repository.CalendarRepositoryImpl
 import com.example.basecalendar.feature_calendar.domain.repository.CalendarRepository
@@ -37,5 +40,11 @@ object AppModule {
     @Singleton
     fun provideAlarmScheduler(app: Application): AlarmScheduler {
         return AlarmSchedulerImpl(app.applicationContext)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNotificationScheduler(app: Application): NotificationScheduler {
+        return NotificationSchedulerImpl(app.applicationContext)
     }
 }

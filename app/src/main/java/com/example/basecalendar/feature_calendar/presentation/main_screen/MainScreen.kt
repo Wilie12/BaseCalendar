@@ -181,6 +181,7 @@ fun MainScreen(
                     modifier = Modifier.fillMaxHeight()
                 ) {
                     itemsIndexed(state.listOfDays) {index, item ->
+                        // TODO - check why height is changing
                         Row(
                             modifier = Modifier
                                 .height(IntrinsicSize.Min)
@@ -200,11 +201,11 @@ fun MainScreen(
                                 Divider(modifier = Modifier.fillMaxWidth())
                             }
                             // TODO - check why width of divider is set to 0.dp
-                            Divider(
-                                modifier = Modifier
-                                    .width(1.dp)
-                                    .fillMaxHeight()
-                            )
+//                            Divider(
+//                                modifier = Modifier
+//                                    .width(1.dp)
+//                                    .fillMaxHeight()
+//                            )
                         }
                     }
                 }

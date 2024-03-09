@@ -4,15 +4,14 @@ import android.app.Service
 import android.content.Intent
 import android.os.IBinder
 import android.util.Log
+import com.example.basecalendar.feature_calendar.data.util.ReminderMode
 import com.example.basecalendar.feature_calendar.domain.use_case.alarm_service.AlarmServiceUseCases
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Calendar
-import java.util.Locale
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -38,12 +37,13 @@ class AlarmService: Service() {
                 firstDayOfNextYear = alarmServiceUseCases.getFirstDayOfNextYearInMillis(c.get(Calendar.YEAR))
             )
             listOfEvents.forEach { calendarEvent ->
-                if (calendarEvent.startingDate > System.currentTimeMillis()) {
+                if (calendarEvent.startingDate > System.currentTimeMillis() && calendarEvent.reminderMode != ReminderMode.NONE) {
                     val alarmItem = AlarmItem(
                         time = calendarEvent.startingDate,
-                        message = calendarEvent.title,
+                        title = calendarEvent.title,
                         reminderMode = calendarEvent.reminderMode
                     )
+                    alarmScheduler.schedule(alarmItem)
                     alarmScheduler.schedule(alarmItem)
                 }
             }
