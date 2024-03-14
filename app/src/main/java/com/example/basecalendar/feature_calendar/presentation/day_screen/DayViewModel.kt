@@ -2,6 +2,7 @@ package com.example.basecalendar.feature_calendar.presentation.day_screen
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.basecalendar.feature_calendar.data.util.CalendarDate
@@ -13,14 +14,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DayViewModel @Inject constructor(
-    private val dayUseCases: DayUseCases
+    private val dayUseCases: DayUseCases,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _state = mutableStateOf(DayState())
     val state: State<DayState> = _state
 
     init {
-        getCurrentDate()
+        getCurrentDate(checkNotNull(savedStateHandle["day"]))
         viewModelScope.launch {
             getAllEvents(state.value.selectedDate.year)
             setFullCalendar(
@@ -231,15 +233,16 @@ class DayViewModel @Inject constructor(
         )
     }
 
-    private fun getCurrentDate() {
-
+    private fun getCurrentDate(
+        initialDay: Int = 0
+    ) {
         val currentDate = dayUseCases.getCurrentDate()
 
         val c = Calendar.getInstance()
 
         _state.value = state.value.copy(
             selectedDate = CalendarDate(
-                day = currentDate.day,
+                day = if (initialDay != 0) initialDay else currentDate.day,
                 month = currentDate.month,
                 year = currentDate.year
             ),

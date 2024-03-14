@@ -21,7 +21,8 @@ import com.example.basecalendar.feature_calendar.domain.model.CalendarDay
 @Composable
 fun CalendarDayItem(
     calendarDay: CalendarDay,
-    isCurrentDay: Boolean
+    isCurrentDay: Boolean,
+    onNavigate: (Int) -> Unit
 ) {
     if (calendarDay.isEmpty) {
 
@@ -30,20 +31,21 @@ fun CalendarDayItem(
                 text = "",
                 textAlign = TextAlign.Center,
                 modifier = Modifier
+                    .fillMaxWidth()
                     .padding(8.dp)
             )
             for(i in 1..5) {
                 Text(
                     text = "",
-                    fontSize = 14.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth()
+                    fontSize = 14.sp
                 )
             }
         }
     } else {
         Column(
-            modifier = Modifier.clickable {  }
+            modifier = Modifier.clickable {
+                onNavigate(calendarDay.dayOfMonth)
+            }
         ) {
             Text(
                 text = calendarDay.dayOfMonth.toString(),
@@ -56,7 +58,6 @@ fun CalendarDayItem(
                         color = if (isCurrentDay) MaterialTheme.colorScheme.primary else Color.Transparent,
                         shape = CircleShape
                     )
-                    .clip(CircleShape)
             )
             if (calendarDay.listOfEvents.isNotEmpty()) {
                 Column {
@@ -73,16 +74,14 @@ fun CalendarDayItem(
                                     shape = CircleShape
                                 )
                                 .clickable {
-                                    // TODO - navigation to day screen
+                                    // TODO - navigation to event screen
                                 }
                         )
                     }
                     for (i in 1..(5 - calendarDay.listOfEvents.size)) {
                         Text(
                             text = "",
-                            fontSize = 14.sp,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
+                            fontSize = 14.sp
                         )
                     }
                 }
@@ -91,9 +90,7 @@ fun CalendarDayItem(
                     for(i in 1..5) {
                         Text(
                             text = "",
-                            fontSize = 14.sp,
-                            textAlign = TextAlign.Center,
-                            modifier = Modifier.fillMaxWidth()
+                            fontSize = 14.sp
                         )
                     }
                 }

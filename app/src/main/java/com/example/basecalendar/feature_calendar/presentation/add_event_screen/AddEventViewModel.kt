@@ -120,16 +120,47 @@ class AddEventViewModel @Inject constructor(
                     title = event.value
                 )
             }
+            is AddEventEvent.DismissDialog -> {
 
-            // TODO - set isTakingWholeDayEvents starting date to 00:00
+                val queue = state.value.permissionDialogQueue.toMutableList()
+                queue.removeLast()
+
+                _state.value = state.value.copy(
+                    permissionDialogQueue = queue.toList()
+                )
+
+            }
+            is AddEventEvent.PermissionResult -> {
+
+                val queue = state.value.permissionDialogQueue.toMutableList()
+
+                if (!event.isGranted) {
+
+                    queue.add(event.permission)
+
+                    _state.value = state.value.copy(
+                        permissionDialogQueue = queue.toList()
+                    )
+                }
+            }
             AddEventEvent.SaveEvent -> {
                 viewModelScope.launch {
                     if (state.value.endingDate > state.value.startingDate || state.value.isTakingWholeDay) {
                         addEventUseCases.addEvent(
                             CalendarEventDto(
                                 id = 0,
-                                startingDate = state.value.startingDate,
-                                endingDate = state.value.endingDate,
+                                startingDate = if (state.value.isTakingWholeDay) {
+                                    addEventUseCases.getStartOfDay(state.value.startingDate)
+                                } else {
+                                    state.value.startingDate
+
+                                },
+                                endingDate = if (state.value.isTakingWholeDay) {
+                                    addEventUseCases.getStartOfDay(state.value.endingDate)
+                                } else {
+                                    state.value.endingDate
+
+                                },
                                 isTakingWholeDay = state.value.isTakingWholeDay,
                                 isRepeating = state.value.isRepeating,
                                 repeatMode = state.value.repeatMode,

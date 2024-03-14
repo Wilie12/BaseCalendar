@@ -272,11 +272,13 @@ fun DayScreen(
                                         .width(50.dp)
                                 )
                                 state.listOfEventsFromCurrentDay.forEach {
-                                    DayEventItem(
-                                        calendarEventDto = it,
-                                        currentDay = state.selectedDate.day,
-                                        modifier = Modifier.weight(1f)
-                                    )
+                                    if (!(it.isTakingWholeDay)) {
+                                        DayEventItem(
+                                            calendarEventDto = it,
+                                            currentDay = state.selectedDate.day,
+                                            modifier = Modifier.weight(1f)
+                                        )
+                                    }
                                 }
                             }
                             // TODO - add current hour display divider

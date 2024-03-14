@@ -25,6 +25,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // TODO - rebuild whole app to make navigationDrawer in MainActivity
         setContent {
             BaseCalendarTheme {
                 Surface(
@@ -51,7 +52,17 @@ class MainActivity : ComponentActivity() {
                         ) {
                             AddEventScreenRoot(navController = navController)
                         }
-                        composable(route = Screen.DayScreen.route) {
+                        composable(
+                            route = Screen.DayScreen.route + "?day={day}",
+                            arguments = listOf(
+                                navArgument(
+                                    name = "day"
+                                ) {
+                                    defaultValue = 0
+                                    type = NavType.IntType
+                                }
+                            )
+                        ) {
                             DayScreenRoot(navController = navController)
                         }
                     }

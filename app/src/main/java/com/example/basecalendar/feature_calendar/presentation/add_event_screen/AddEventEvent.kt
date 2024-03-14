@@ -18,5 +18,7 @@ sealed class AddEventEvent {
     data class ChangeReminderMode(val value: Int) : AddEventEvent()
     data class ChangeColor(val value: Int) : AddEventEvent()
     data class ChangeDescription(val value: String) : AddEventEvent()
+    object DismissDialog : AddEventEvent()
+    data class PermissionResult(val permission: String, val isGranted: Boolean): AddEventEvent()
     object SaveEvent : AddEventEvent()
 }

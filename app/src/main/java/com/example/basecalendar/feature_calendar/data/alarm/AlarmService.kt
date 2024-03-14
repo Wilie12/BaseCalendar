@@ -43,7 +43,7 @@ class AlarmService: Service() {
                         title = calendarEvent.title,
                         reminderMode = calendarEvent.reminderMode
                     )
-                    alarmScheduler.schedule(alarmItem)
+                    alarmScheduler.cancel(alarmItem)
                     alarmScheduler.schedule(alarmItem)
                 }
             }

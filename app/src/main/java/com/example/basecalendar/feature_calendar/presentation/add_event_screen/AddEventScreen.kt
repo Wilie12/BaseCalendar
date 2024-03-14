@@ -1,5 +1,10 @@
 package com.example.basecalendar.feature_calendar.presentation.add_event_screen
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
@@ -35,6 +40,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,14 +54,16 @@ import com.example.basecalendar.feature_calendar.data.util.ReminderMode
 import com.example.basecalendar.feature_calendar.data.util.RepeatMode
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.components.ColorOptionsDialog
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.components.DateText
+import com.example.basecalendar.feature_calendar.presentation.add_event_screen.components.PermissionDialog
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.components.RadioOptionsDialog
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.components.TimePickerDialog
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.components.TimeText
+import com.example.basecalendar.feature_calendar.util.findActivity
+import com.example.basecalendar.feature_calendar.util.openAppSettings
 import com.example.basecalendar.feature_calendar.util.parsers.parseColorIntToString
 import com.example.basecalendar.feature_calendar.util.parsers.parseReminderModeIntToName
 import com.example.basecalendar.feature_calendar.util.parsers.parseRepeatModeIntToString
 import java.util.Calendar
-import kotlin.time.Duration.Companion.hours
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,6 +74,22 @@ fun AddEventScreen(
 ) {
     val scrollState = rememberScrollState()
     val c = Calendar.getInstance()
+
+    val context = LocalContext.current
+
+    val postNotificationPermissionResultLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                onEvent(
+                    AddEventEvent.PermissionResult(
+                        Manifest.permission.POST_NOTIFICATIONS,
+                        isGranted = isGranted
+                    )
+                )
+            }
+        }
+    )
 
     val startingDatePickerState = rememberDatePickerState()
     val endingDatePickerState = rememberDatePickerState()
@@ -370,7 +394,18 @@ fun AddEventScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { showReminderModeDialog.value = true }
+                    .clickable {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            postNotificationPermissionResultLauncher.launch(
+                                Manifest.permission.POST_NOTIFICATIONS
+                            )
+                            if (context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                                showReminderModeDialog.value = true
+                            }
+                        } else {
+                            showReminderModeDialog.value = true
+                        }
+                    }
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_notification),
@@ -432,6 +467,38 @@ fun AddEventScreen(
                         Text(
                             text = "Add description"
                         )
+                    }
+                )
+            }
+        }
+    }
+    if (state.permissionDialogQueue.isNotEmpty()) {
+        state.permissionDialogQueue.forEach { permission ->
+            PermissionDialog(
+                isPermanentlyDeclined = !(LocalContext.current.findActivity()
+                    .shouldShowRequestPermissionRationale(permission)),
+                onDismiss = { onEvent(AddEventEvent.DismissDialog) },
+                onConfirm = {
+                    onEvent(AddEventEvent.DismissDialog)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        postNotificationPermissionResultLauncher.launch(
+                            Manifest.permission.POST_NOTIFICATIONS
+                        )
+                    }
+                },
+                onGoToAppSettingsClick = {
+                    onEvent(AddEventEvent.DismissDialog)
+                    context.findActivity().openAppSettings()
+                }) {
+                Text(
+                    text = if (!(LocalContext.current.findActivity()
+                            .shouldShowRequestPermissionRationale(permission))
+                    ) {
+                        "It seems you permanently declined post notification permission. " +
+                                "You can go to the app settings to grant it."
+                    } else {
+                        "This app needs permission to send you notifications " +
+                                "so you won't forget about upcoming events."
                     }
                 )
             }

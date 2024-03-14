@@ -4,6 +4,7 @@ import com.example.basecalendar.feature_calendar.domain.repository.CalendarRepos
 import com.example.basecalendar.feature_calendar.domain.use_case.add_event.AddEvent
 import com.example.basecalendar.feature_calendar.domain.use_case.add_event.AddEventUseCases
 import com.example.basecalendar.feature_calendar.domain.use_case.add_event.GetSelectedHourAndMinutesInMillis
+import com.example.basecalendar.feature_calendar.domain.use_case.add_event.GetStartOfDay
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +20,8 @@ object AddEventModule {
     fun provideAddEventUseCases(repository: CalendarRepository): AddEventUseCases {
         return AddEventUseCases(
             addEvent = AddEvent(repository),
-            getSelectedHourAndMinutesInMillis = GetSelectedHourAndMinutesInMillis()
+            getSelectedHourAndMinutesInMillis = GetSelectedHourAndMinutesInMillis(),
+            getStartOfDay = GetStartOfDay()
         )
     }
 }

@@ -178,35 +178,48 @@ fun MainScreen(
                 Divider(modifier = Modifier.fillMaxWidth())
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(7),
-                    modifier = Modifier.fillMaxHeight()
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalArrangement = Arrangement.SpaceEvenly
                 ) {
-                    itemsIndexed(state.listOfDays) {index, item ->
-                        // TODO - check why height is changing
-                        Row(
-                            modifier = Modifier
-                                .height(IntrinsicSize.Min)
-                        ) {
-                            Divider(
-                                modifier = Modifier
-                                    .width(1.dp)
-                                    .fillMaxHeight()
-                            )
-                            Column {
-                                CalendarDayItem(
-                                    calendarDay = item,
-                                    isCurrentDay = item.dayOfMonth == state.currentDate.day &&
-                                            state.currentDate.year == state.selectedDate.year &&
-                                            state.currentDate.month == state.selectedDate.month
-                                )
-                                Divider(modifier = Modifier.fillMaxWidth())
+                    itemsIndexed(state.listOfDays) { index, item ->
+                        CalendarDayItem(
+                            calendarDay = item,
+                            isCurrentDay = item.dayOfMonth == state.currentDate.day &&
+                                    state.currentDate.year == state.selectedDate.year &&
+                                    state.currentDate.month == state.selectedDate.month,
+                            onNavigate = { day ->
+                                navController.navigate(Screen.DayScreen.route + "?day=${day}")
                             }
-                            // TODO - check why width of divider is set to 0.dp
+                        )
+                        if (index > 6) {
+                            Divider(modifier = Modifier.fillMaxWidth())
+                        }
+//                            TODO - check why height is changing
+//                        Row(
+//                            modifier = Modifier
+//                                .height(IntrinsicSize.Max)
+//                        ) {
 //                            Divider(
 //                                modifier = Modifier
 //                                    .width(1.dp)
 //                                    .fillMaxHeight()
 //                            )
-                        }
+//                            Column {
+//                                CalendarDayItem(
+//                                    calendarDay = item,
+//                                    isCurrentDay = item.dayOfMonth == state.currentDate.day &&
+//                                            state.currentDate.year == state.selectedDate.year &&
+//                                            state.currentDate.month == state.selectedDate.month
+//                                )
+//                                Divider(modifier = Modifier.fillMaxWidth())
+//                            }
+//                            TODO - check why width of divider is set to 0.dp
+//                            Divider(
+//                                modifier = Modifier
+//                                    .width(1.dp)
+//                                    .fillMaxHeight()
+//                            )
+//                        }
                     }
                 }
             }

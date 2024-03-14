@@ -12,5 +12,6 @@ data class AddEventState(
     val reminderMode: Int = 0,
     val color: Int = Constants.blue,
     val description: String = "",
-    val screenRoute: String = ""
+    val screenRoute: String = "",
+    val permissionDialogQueue: List<String> = emptyList()
 )
