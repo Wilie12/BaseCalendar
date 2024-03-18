@@ -281,7 +281,18 @@ fun DayScreen(
                                     }
                                 }
                             }
-                            // TODO - add current hour display divider
+                            if (state.selectedDate == state.currentDate) {
+                                Divider(
+                                    color = MaterialTheme.colorScheme.primary,
+                                    thickness = 2.dp,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(
+                                            start = 50.dp,
+                                            top = (60.dp * (state.currentHour + state.currentMinutes.toFloat().div(60)))
+                                        )
+                                )
+                            }
                         }
                     }
                 }

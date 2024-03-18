@@ -251,7 +251,9 @@ class DayViewModel @Inject constructor(
                 month = currentDate.month,
                 year = currentDate.year
             ),
-            dayOfWeek = c.get(Calendar.DAY_OF_WEEK)
+            dayOfWeek = c.get(Calendar.DAY_OF_WEEK),
+            currentHour = c.get(Calendar.HOUR_OF_DAY),
+            currentMinutes = c.get(Calendar.MINUTE)
         )
     }
 

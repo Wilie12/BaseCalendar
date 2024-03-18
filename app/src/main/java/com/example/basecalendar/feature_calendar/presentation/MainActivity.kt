@@ -16,6 +16,7 @@ import androidx.navigation.navArgument
 import com.example.basecalendar.feature_calendar.data.alarm.AlarmService
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.AddEventScreenRoot
 import com.example.basecalendar.feature_calendar.presentation.day_screen.DayScreenRoot
+import com.example.basecalendar.feature_calendar.presentation.event_screen.EventScreenRoot
 import com.example.basecalendar.feature_calendar.presentation.main_screen.MainScreenRoot
 import com.example.basecalendar.feature_calendar.util.navigation.Screen
 import com.example.basecalendar.ui.theme.BaseCalendarTheme
@@ -26,6 +27,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // TODO - rebuild whole app to make navigationDrawer in MainActivity
+        // TODO - think about adding tasks database
+        // TODO - TEST ONLY
+        startService(Intent(this, AlarmService::class.java))
         setContent {
             BaseCalendarTheme {
                 Surface(
@@ -64,6 +68,19 @@ class MainActivity : ComponentActivity() {
                             )
                         ) {
                             DayScreenRoot(navController = navController)
+                        }
+                        // TODO - add navigation to event screen from month and day
+                        composable(
+                            route = Screen.EventScreen.route + "/{eventId}",
+                            arguments = listOf(
+                                navArgument(
+                                    name = "eventId"
+                                ) {
+                                    type = NavType.IntType
+                                }
+                            )
+                        ) {
+                            EventScreenRoot(navController = navController)
                         }
                     }
                 }

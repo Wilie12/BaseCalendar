@@ -19,6 +19,8 @@ data class DayState(
         year = 2000
     ),
     val dayOfWeek: Int = 1,
+    val currentHour: Int = 1,
+    val currentMinutes: Int = 1,
     val listOfDays: List<CalendarDay> = emptyList(),
     val isLoading: Boolean = false
 )
