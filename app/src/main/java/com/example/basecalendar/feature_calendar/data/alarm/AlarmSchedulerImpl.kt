@@ -28,7 +28,7 @@ class AlarmSchedulerImpl(
                 context,
                 item.hashCode(),
                 intent,
-                PendingIntent.FLAG_IMMUTABLE
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         )
         Log.d("ALARM_SCHEDULER", "Item scheduled: ${item.title}, ${item.time}")

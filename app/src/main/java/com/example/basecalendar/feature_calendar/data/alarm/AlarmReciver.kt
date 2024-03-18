@@ -9,7 +9,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class AlarmReceiver: BroadcastReceiver() {
 
-    // TODO - add notification for every event
     @Inject
     lateinit var notificationScheduler: NotificationScheduler
 
@@ -18,12 +17,14 @@ class AlarmReceiver: BroadcastReceiver() {
         val time = intent?.getLongExtra("EXTRA_TIME", 0) ?: return
         val reminderMode = intent?.getIntExtra("EXTRA_REMINDER_MODE", 0) ?: return
         println("ALARM_RECEIVED: $message")
-        notificationScheduler.showNotification(
-            AlarmItem(
-                time = time,
-                title = message,
-                reminderMode = reminderMode
+        if (System.currentTimeMillis() < time) {
+            notificationScheduler.showNotification(
+                AlarmItem(
+                    time = time,
+                    title = message,
+                    reminderMode = reminderMode
+                )
             )
-        )
+        }
     }
 }

@@ -28,8 +28,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         // TODO - rebuild whole app to make navigationDrawer in MainActivity
         // TODO - think about adding tasks database
-        // TODO - TEST ONLY
-        startService(Intent(this, AlarmService::class.java))
         setContent {
             BaseCalendarTheme {
                 Surface(

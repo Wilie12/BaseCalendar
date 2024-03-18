@@ -37,7 +37,7 @@ class AlarmService: Service() {
                 firstDayOfNextYear = alarmServiceUseCases.getFirstDayOfNextYearInMillis(c.get(Calendar.YEAR))
             )
             listOfEvents.forEach { calendarEvent ->
-                if (calendarEvent.startingDate > System.currentTimeMillis() && calendarEvent.reminderMode != ReminderMode.NONE) {
+                if (calendarEvent.reminderMode != ReminderMode.NONE && calendarEvent.startingDate > System.currentTimeMillis()) {
                     val alarmItem = AlarmItem(
                         time = calendarEvent.startingDate,
                         title = calendarEvent.title,
