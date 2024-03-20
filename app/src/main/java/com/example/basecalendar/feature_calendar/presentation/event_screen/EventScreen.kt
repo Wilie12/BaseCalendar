@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -71,38 +72,42 @@ fun EventScreen(
                 .padding(horizontal = 16.dp)
         ) {
             // TODO - design screen
-            Row {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_color),
-                    contentDescription = "Color",
-                    tint = Color(state.event.color)
-                )
-                Column {
-                    Text(text = state.event.title)
-                    Row {
-                        DateText(date = state.event.startingDate) {}
-                        TimeText(date = state.event.startingDate) {}
+            if (!state.isLoading) {
+                Row {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_color),
+                        contentDescription = "Color",
+                        tint = Color(state.event.color)
+                    )
+                    Column {
+                        Text(text = state.event.title)
+                        Row {
+                            DateText(date = state.event.startingDate) {}
+                            TimeText(date = state.event.startingDate) {}
+                        }
+                        Row {
+                            DateText(date = state.event.endingDate) {}
+                            TimeText(date = state.event.endingDate) {}
+                        }
+                        Text(text = "Repeated: ${parseRepeatModeIntToString(state.event.repeatMode)}")
                     }
-                    Row {
-                        DateText(date = state.event.endingDate) {}
-                        TimeText(date = state.event.endingDate) {}
-                    }
-                    Text(text = "Repeated: ${parseRepeatModeIntToString(state.event.repeatMode)}")
                 }
-            }
-            Row {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_notification),
-                    contentDescription = "Reminder"
-                )
-                Text(text = parseReminderModeIntToName(state.event.reminderMode))
-            }
-            Row {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_description),
-                    contentDescription = "Description"
-                )
-                Text(text = state.event.description)
+                Row {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_notification),
+                        contentDescription = "Reminder"
+                    )
+                    Text(text = parseReminderModeIntToName(state.event.reminderMode))
+                }
+                Row {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_description),
+                        contentDescription = "Description"
+                    )
+                    Text(text = state.event.description)
+                }
+            } else {
+                CircularProgressIndicator()
             }
         }
     }

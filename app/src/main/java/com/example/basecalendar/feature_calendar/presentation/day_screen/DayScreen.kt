@@ -276,7 +276,10 @@ fun DayScreen(
                                         DayEventItem(
                                             calendarEventDto = it,
                                             currentDay = state.selectedDate.day,
-                                            modifier = Modifier.weight(1f)
+                                            modifier = Modifier.weight(1f),
+                                            onEventNavigate = { eventId ->
+                                                navController.navigate(Screen.EventScreen.route + "/$eventId/${Screen.DayScreen.route}")
+                                            }
                                         )
                                     }
                                 }

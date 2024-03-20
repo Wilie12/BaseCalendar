@@ -20,4 +20,7 @@ interface CalendarDao {
 
     @Query("SELECT * FROM calendar_event_table")
     suspend fun getAllCalendarEvents(): List<CalendarEventDto>
+    
+    @Query("SELECT * FROM calendar_event_table WHERE id = :eventId")
+    suspend fun getCalendarEventById(eventId: Int): CalendarEventDto
 }

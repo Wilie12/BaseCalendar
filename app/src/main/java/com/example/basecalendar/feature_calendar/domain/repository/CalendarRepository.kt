@@ -12,4 +12,6 @@ interface CalendarRepository {
     ): List<CalendarEventDto>
 
     suspend fun getAllCalendarEvents(): List<CalendarEventDto>
+
+    suspend fun getCalendarEventById(eventId: Int): CalendarEventDto
 }

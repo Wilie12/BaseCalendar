@@ -26,4 +26,8 @@ class CalendarRepositoryImpl(
     override suspend fun getAllCalendarEvents(): List<CalendarEventDto> {
         return calendarDao.getAllCalendarEvents()
     }
+
+    override suspend fun getCalendarEventById(eventId: Int): CalendarEventDto {
+        return calendarDao.getCalendarEventById(eventId)
+    }
 }

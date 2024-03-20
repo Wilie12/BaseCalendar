@@ -1,6 +1,5 @@
 package com.example.basecalendar.feature_calendar.presentation
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -13,7 +12,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.example.basecalendar.feature_calendar.data.alarm.AlarmService
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.AddEventScreenRoot
 import com.example.basecalendar.feature_calendar.presentation.day_screen.DayScreenRoot
 import com.example.basecalendar.feature_calendar.presentation.event_screen.EventScreenRoot
@@ -67,14 +65,18 @@ class MainActivity : ComponentActivity() {
                         ) {
                             DayScreenRoot(navController = navController)
                         }
-                        // TODO - add navigation to event screen from month and day
                         composable(
-                            route = Screen.EventScreen.route + "/{eventId}",
+                            route = Screen.EventScreen.route + "/{eventId}/{screen}",
                             arguments = listOf(
                                 navArgument(
                                     name = "eventId"
                                 ) {
                                     type = NavType.IntType
+                                },
+                                navArgument(
+                                    name = "screen"
+                                ) {
+                                    type = NavType.StringType
                                 }
                             )
                         ) {

@@ -5,17 +5,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -187,8 +183,11 @@ fun MainScreen(
                             isCurrentDay = item.dayOfMonth == state.currentDate.day &&
                                     state.currentDate.year == state.selectedDate.year &&
                                     state.currentDate.month == state.selectedDate.month,
-                            onNavigate = { day ->
-                                navController.navigate(Screen.DayScreen.route + "?day=${day}")
+                            onDayNavigate = { day ->
+                                navController.navigate(Screen.DayScreen.route + "?day=$day")
+                            },
+                            onEventNavigate = { eventId ->
+                                navController.navigate(Screen.EventScreen.route + "/$eventId/${Screen.MainScreen.route}")
                             }
                         )
                         if (index > 6) {

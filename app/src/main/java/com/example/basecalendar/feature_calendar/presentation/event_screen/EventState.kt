@@ -19,4 +19,5 @@ data class EventState(
         reminderMode = ReminderMode.HOUR_1
     ),
     val screenRoute: String = "",
+    val isLoading: Boolean = false
 )

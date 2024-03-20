@@ -1,6 +1,7 @@
 package com.example.basecalendar.feature_calendar.presentation.day_screen.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,9 +18,10 @@ import java.util.Calendar
 fun DayEventItem(
     calendarEventDto: CalendarEventDto,
     currentDay: Int,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onEventNavigate: (Int) -> Unit
 ) {
-
+    // TODO - design event
     val c = Calendar.getInstance()
 
     c.timeInMillis = calendarEventDto.startingDate
@@ -58,6 +60,7 @@ fun DayEventItem(
                 color = Color(calendarEventDto.color),
                 shape = RoundedCornerShape(32.dp)
             )
+            .clickable { onEventNavigate(calendarEventDto.id) }
             .padding(8.dp)
     ) {
         Text(text = calendarEventDto.title)
