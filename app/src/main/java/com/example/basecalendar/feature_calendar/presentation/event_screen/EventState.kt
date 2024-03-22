@@ -8,15 +8,15 @@ import com.example.basecalendar.feature_calendar.data.util.RepeatMode
 data class EventState(
     val event: CalendarEventDto = CalendarEventDto(
         id = 0,
-        startingDate = 1691835780000,
-        endingDate = 1691842980000L,
+        startingDate = 0L,
+        endingDate = 0L,
         isTakingWholeDay = false,
         isRepeating = false,
-        repeatMode = RepeatMode.EVERY_WEEK,
-        title = "Title",
-        description = "Description",
-        color = Constants.blue,
-        reminderMode = ReminderMode.HOUR_1
+        repeatMode = 0,
+        title = "",
+        description = "",
+        color = 0,
+        reminderMode = 0
     ),
     val screenRoute: String = "",
     val isLoading: Boolean = false

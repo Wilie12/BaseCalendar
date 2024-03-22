@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddEventViewModel @Inject constructor(
     private val addEventUseCases: AddEventUseCases,
-    savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _state = mutableStateOf(AddEventState())
@@ -31,6 +31,9 @@ class AddEventViewModel @Inject constructor(
     init {
         getCurrentStartingAndEndingDate()
         setStateScreenRoute(checkNotNull(savedStateHandle["screen"]))
+        if (checkNotNull(savedStateHandle["eventId"]) != 0) {
+            getCalendarEventById(checkNotNull(savedStateHandle["eventId"]))
+        }
     }
 
     fun onEvent(event: AddEventEvent) {
@@ -120,6 +123,7 @@ class AddEventViewModel @Inject constructor(
                     title = event.value
                 )
             }
+
             is AddEventEvent.DismissDialog -> {
 
                 val queue = state.value.permissionDialogQueue.toMutableList()
@@ -130,6 +134,7 @@ class AddEventViewModel @Inject constructor(
                 )
 
             }
+
             is AddEventEvent.PermissionResult -> {
 
                 val queue = state.value.permissionDialogQueue.toMutableList()
@@ -143,33 +148,61 @@ class AddEventViewModel @Inject constructor(
                     )
                 }
             }
+
             AddEventEvent.SaveEvent -> {
                 viewModelScope.launch {
                     if (state.value.endingDate > state.value.startingDate || state.value.isTakingWholeDay) {
-                        addEventUseCases.addEvent(
-                            CalendarEventDto(
-                                id = 0,
-                                startingDate = if (state.value.isTakingWholeDay) {
-                                    addEventUseCases.getStartOfDay(state.value.startingDate)
-                                } else {
-                                    state.value.startingDate
+                        if (checkNotNull(savedStateHandle["eventId"]) != 0) {
+                            addEventUseCases.updateCalendarEvent(
+                                CalendarEventDto(
+                                    id = checkNotNull(savedStateHandle["eventId"]),
+                                    startingDate = if (state.value.isTakingWholeDay) {
+                                        addEventUseCases.getStartOfDay(state.value.startingDate)
+                                    } else {
+                                        state.value.startingDate
 
-                                },
-                                endingDate = if (state.value.isTakingWholeDay) {
-                                    addEventUseCases.getStartOfDay(state.value.endingDate)
-                                } else {
-                                    state.value.endingDate
+                                    },
+                                    endingDate = if (state.value.isTakingWholeDay) {
+                                        addEventUseCases.getStartOfDay(state.value.endingDate)
+                                    } else {
+                                        state.value.endingDate
 
-                                },
-                                isTakingWholeDay = state.value.isTakingWholeDay,
-                                isRepeating = state.value.isRepeating,
-                                repeatMode = state.value.repeatMode,
-                                title = state.value.title,
-                                description = state.value.description,
-                                color = state.value.color,
-                                reminderMode = state.value.reminderMode
+                                    },
+                                    isTakingWholeDay = state.value.isTakingWholeDay,
+                                    isRepeating = state.value.isRepeating,
+                                    repeatMode = state.value.repeatMode,
+                                    title = state.value.title,
+                                    description = state.value.description,
+                                    color = state.value.color,
+                                    reminderMode = state.value.reminderMode
+                                )
                             )
-                        )
+                        } else {
+                            addEventUseCases.addEvent(
+                                CalendarEventDto(
+                                    id = 0,
+                                    startingDate = if (state.value.isTakingWholeDay) {
+                                        addEventUseCases.getStartOfDay(state.value.startingDate)
+                                    } else {
+                                        state.value.startingDate
+
+                                    },
+                                    endingDate = if (state.value.isTakingWholeDay) {
+                                        addEventUseCases.getStartOfDay(state.value.endingDate)
+                                    } else {
+                                        state.value.endingDate
+
+                                    },
+                                    isTakingWholeDay = state.value.isTakingWholeDay,
+                                    isRepeating = state.value.isRepeating,
+                                    repeatMode = state.value.repeatMode,
+                                    title = state.value.title,
+                                    description = state.value.description,
+                                    color = state.value.color,
+                                    reminderMode = state.value.reminderMode
+                                )
+                            )
+                        }
                         if (state.value.reminderMode != ReminderMode.NONE) {
                             scheduleAlarmItem(
                                 AlarmItem(
@@ -198,8 +231,27 @@ class AddEventViewModel @Inject constructor(
         )
     }
 
-
     private fun scheduleAlarmItem(item: AlarmItem) {
         alarmScheduler.schedule(item)
+    }
+
+    private fun getCalendarEventById(eventId: Int) {
+        viewModelScope.launch {
+            _state.value = state.value.copy(isLoading = true)
+
+            val event = addEventUseCases.getCalendarEventById(eventId)
+            _state.value = state.value.copy(
+                title = event.title,
+                isTakingWholeDay = event.isTakingWholeDay,
+                startingDate = event.startingDate,
+                endingDate = event.endingDate,
+                isRepeating = event.isRepeating,
+                repeatMode = event.repeatMode,
+                reminderMode = event.reminderMode,
+                color = event.color,
+                description = event.description
+            )
+            _state.value = state.value.copy(isLoading = false)
+        }
     }
 }

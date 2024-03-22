@@ -13,5 +13,6 @@ data class AddEventState(
     val color: Int = Constants.blue,
     val description: String = "",
     val screenRoute: String = "",
-    val permissionDialogQueue: List<String> = emptyList()
+    val permissionDialogQueue: List<String> = emptyList(),
+    val isLoading: Boolean = false
 )

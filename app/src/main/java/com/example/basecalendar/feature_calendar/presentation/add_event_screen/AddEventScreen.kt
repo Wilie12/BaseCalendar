@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.Divider
@@ -276,199 +277,203 @@ fun AddEventScreen(
                 .padding(horizontal = 16.dp)
                 .scrollable(scrollState, Orientation.Vertical)
         ) {
-            TextField(
-                value = state.title,
-                onValueChange = {
-                    onEvent(AddEventEvent.EnteredTitle(it))
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.colors(
-                    disabledContainerColor = Color.Transparent,
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedLabelColor = Color.Transparent
-                ),
-                textStyle = TextStyle(
-                    fontSize = 20.sp
-                ),
-                label = {
-                    Text(
-                        text = "Add Title",
-                        fontSize = 20.sp
-                    )
-                }
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_time),
-                        contentDescription = "Event time"
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = "Whole day")
-                }
-                Switch(
-                    checked = state.isTakingWholeDay,
-                    onCheckedChange = {
-                        onEvent(AddEventEvent.ChangeIsTakingWholeDay(it))
-                    }
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_time),
-                        contentDescription = null,
-                        tint = Color.Transparent
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    DateText(date = state.startingDate) {
-                        showStartingDateDialog.value = true
-                    }
-                }
-                AnimatedVisibility(visible = !state.isTakingWholeDay) {
-                    TimeText(date = state.startingDate) {
-                        showStartingTimeDialog.value = true
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.ic_time),
-                        contentDescription = null,
-                        tint = Color.Transparent
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    DateText(date = state.endingDate) {
-                        showEndingDateDialog.value = true
-                    }
-                }
-                AnimatedVisibility(visible = !state.isTakingWholeDay) {
-                    TimeText(date = state.endingDate) {
-                        showEndingTimeDialog.value = true
-                    }
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showRepeatModeDialog.value = true }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_repeat),
-                    contentDescription = "Repeat mode"
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = parseRepeatModeIntToString(state.repeatMode)
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Divider(modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            postNotificationPermissionResultLauncher.launch(
-                                Manifest.permission.POST_NOTIFICATIONS
-                            )
-                            if (context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                                showReminderModeDialog.value = true
-                            }
-                        } else {
-                            showReminderModeDialog.value = true
-                        }
-                    }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_notification),
-                    contentDescription = "Reminder mode"
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = parseReminderModeIntToName(state.reminderMode)
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Divider(modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showColorDialog.value = true }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_color),
-                    contentDescription = "Color selection",
-                    tint = Color(state.color)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = parseColorIntToString(state.color)
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Divider(modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_description),
-                    contentDescription = "Description"
-                )
-                Spacer(modifier = Modifier.width(8.dp))
+            if (!state.isLoading) {
                 TextField(
-                    value = state.description,
+                    value = state.title,
                     onValueChange = {
-                        onEvent(AddEventEvent.ChangeDescription(it))
+                        onEvent(AddEventEvent.EnteredTitle(it))
                     },
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.colors(
                         disabledContainerColor = Color.Transparent,
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
-                        focusedLabelColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
+                        focusedLabelColor = Color.Transparent
+                    ),
+                    textStyle = TextStyle(
+                        fontSize = 20.sp
                     ),
                     label = {
                         Text(
-                            text = "Add description"
+                            text = "Add Title",
+                            fontSize = 20.sp
                         )
                     }
                 )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_time),
+                            contentDescription = "Event time"
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(text = "Whole day")
+                    }
+                    Switch(
+                        checked = state.isTakingWholeDay,
+                        onCheckedChange = {
+                            onEvent(AddEventEvent.ChangeIsTakingWholeDay(it))
+                        }
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_time),
+                            contentDescription = null,
+                            tint = Color.Transparent
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        DateText(date = state.startingDate) {
+                            showStartingDateDialog.value = true
+                        }
+                    }
+                    AnimatedVisibility(visible = !state.isTakingWholeDay) {
+                        TimeText(date = state.startingDate) {
+                            showStartingTimeDialog.value = true
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_time),
+                            contentDescription = null,
+                            tint = Color.Transparent
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        DateText(date = state.endingDate) {
+                            showEndingDateDialog.value = true
+                        }
+                    }
+                    AnimatedVisibility(visible = !state.isTakingWholeDay) {
+                        TimeText(date = state.endingDate) {
+                            showEndingTimeDialog.value = true
+                        }
+                    }
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showRepeatModeDialog.value = true }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_repeat),
+                        contentDescription = "Repeat mode"
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = parseRepeatModeIntToString(state.repeatMode)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Divider(modifier = Modifier.fillMaxWidth())
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                postNotificationPermissionResultLauncher.launch(
+                                    Manifest.permission.POST_NOTIFICATIONS
+                                )
+                                if (context.checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                                    showReminderModeDialog.value = true
+                                }
+                            } else {
+                                showReminderModeDialog.value = true
+                            }
+                        }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_notification),
+                        contentDescription = "Reminder mode"
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = parseReminderModeIntToName(state.reminderMode)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Divider(modifier = Modifier.fillMaxWidth())
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showColorDialog.value = true }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_color),
+                        contentDescription = "Color selection",
+                        tint = Color(state.color)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = parseColorIntToString(state.color)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Divider(modifier = Modifier.fillMaxWidth())
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_description),
+                        contentDescription = "Description"
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    TextField(
+                        value = state.description,
+                        onValueChange = {
+                            onEvent(AddEventEvent.ChangeDescription(it))
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = TextFieldDefaults.colors(
+                            disabledContainerColor = Color.Transparent,
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedLabelColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        label = {
+                            Text(
+                                text = "Add description"
+                            )
+                        }
+                    )
+                }
+            } else {
+                CircularProgressIndicator()
             }
         }
     }

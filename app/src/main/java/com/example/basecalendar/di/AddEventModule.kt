@@ -1,10 +1,12 @@
 package com.example.basecalendar.di
 
 import com.example.basecalendar.feature_calendar.domain.repository.CalendarRepository
+import com.example.basecalendar.feature_calendar.domain.use_case.GetCalendarEventById
 import com.example.basecalendar.feature_calendar.domain.use_case.add_event.AddEvent
 import com.example.basecalendar.feature_calendar.domain.use_case.add_event.AddEventUseCases
 import com.example.basecalendar.feature_calendar.domain.use_case.add_event.GetSelectedHourAndMinutesInMillis
 import com.example.basecalendar.feature_calendar.domain.use_case.add_event.GetStartOfDay
+import com.example.basecalendar.feature_calendar.domain.use_case.add_event.UpdateCalendarEvent
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,7 +23,9 @@ object AddEventModule {
         return AddEventUseCases(
             addEvent = AddEvent(repository),
             getSelectedHourAndMinutesInMillis = GetSelectedHourAndMinutesInMillis(),
-            getStartOfDay = GetStartOfDay()
+            getStartOfDay = GetStartOfDay(),
+            getCalendarEventById = GetCalendarEventById(repository),
+            updateCalendarEvent = UpdateCalendarEvent(repository)
         )
     }
 }

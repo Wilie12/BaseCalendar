@@ -41,12 +41,14 @@ class MainActivity : ComponentActivity() {
                             MainScreenRoot(navController = navController)
                         }
                         composable(
-                            route = Screen.AddEventScreen.route + "/{screen}",
+                            route = Screen.AddEventScreen.route + "/{screen}?eventId={eventId}",
                             arguments = listOf(
-                                navArgument(
-                                    name = "screen"
-                                ) {
+                                navArgument(name = "screen") {
                                     type = NavType.StringType
+                                },
+                                navArgument(name = "eventId") {
+                                    type = NavType.IntType
+                                    defaultValue = 0
                                 }
                             )
                         ) {
@@ -55,11 +57,9 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = Screen.DayScreen.route + "?day={day}",
                             arguments = listOf(
-                                navArgument(
-                                    name = "day"
-                                ) {
-                                    defaultValue = 0
+                                navArgument(name = "day") {
                                     type = NavType.IntType
+                                    defaultValue = 0
                                 }
                             )
                         ) {
@@ -68,14 +68,10 @@ class MainActivity : ComponentActivity() {
                         composable(
                             route = Screen.EventScreen.route + "/{eventId}/{screen}",
                             arguments = listOf(
-                                navArgument(
-                                    name = "eventId"
-                                ) {
+                                navArgument(name = "eventId") {
                                     type = NavType.IntType
                                 },
-                                navArgument(
-                                    name = "screen"
-                                ) {
+                                navArgument(name = "screen") {
                                     type = NavType.StringType
                                 }
                             )
