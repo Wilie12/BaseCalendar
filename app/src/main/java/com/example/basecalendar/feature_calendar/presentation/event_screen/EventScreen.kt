@@ -1,5 +1,6 @@
 package com.example.basecalendar.feature_calendar.presentation.event_screen
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -15,6 +18,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,8 +45,12 @@ import com.example.basecalendar.feature_calendar.util.parsers.parseRepeatModeInt
 @Composable
 fun EventScreen(
     state: EventState,
+    onEvent: (EventEvent) -> Unit,
     navController: NavController
 ) {
+
+    val showMenu = remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -63,14 +72,40 @@ fun EventScreen(
                             contentDescription = "Edit"
                         )
                     }
-                    IconButton(onClick = {
-                        // TODO - display options
-                    }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_more),
-                            contentDescription = "More options"
-                        )
+                    Box {
+                        IconButton(onClick = {
+                            showMenu.value = !showMenu.value
+                        }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_more),
+                                contentDescription = "More options"
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = showMenu.value,
+                            onDismissRequest = { showMenu.value = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = {
+                                    Text(text = "Delete")
+                                },
+                                onClick = {
+                                    onEvent(EventEvent.DeleteEvent)
+                                    navController.navigate(state.screenRoute) {
+                                        popUpTo(state.screenRoute) {
+                                            inclusive = true
+                                        }
+                                    }
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(text = "Duplicate") },
+                                onClick = {
+                                    navController.navigate(Screen.AddEventScreen.route + "/${state.screenRoute}?eventId=${state.event.id}&isDuplicate=${true}")
+                                })
+                        }
                     }
+
                 }
             )
         }
@@ -81,7 +116,6 @@ fun EventScreen(
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
         ) {
-            // TODO - design screen
             if (!state.isLoading) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -121,7 +155,8 @@ fun EventScreen(
                         }
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(text = "Repeated: ${parseRepeatModeIntToString(state.event.repeatMode)}")
-                    }                }
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -172,6 +207,7 @@ fun EventScreenPreview() {
                 reminderMode = ReminderMode.HOUR_1
             )
         ),
+        onEvent = {},
         navController = rememberNavController()
     )
 }

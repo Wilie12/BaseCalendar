@@ -14,5 +14,6 @@ data class AddEventState(
     val description: String = "",
     val screenRoute: String = "",
     val permissionDialogQueue: List<String> = emptyList(),
+    val isDuplicate: Boolean = false,
     val isLoading: Boolean = false
 )

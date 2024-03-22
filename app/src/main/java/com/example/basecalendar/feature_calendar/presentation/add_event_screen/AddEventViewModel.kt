@@ -153,30 +153,57 @@ class AddEventViewModel @Inject constructor(
                 viewModelScope.launch {
                     if (state.value.endingDate > state.value.startingDate || state.value.isTakingWholeDay) {
                         if (checkNotNull(savedStateHandle["eventId"]) != 0) {
-                            addEventUseCases.updateCalendarEvent(
-                                CalendarEventDto(
-                                    id = checkNotNull(savedStateHandle["eventId"]),
-                                    startingDate = if (state.value.isTakingWholeDay) {
-                                        addEventUseCases.getStartOfDay(state.value.startingDate)
-                                    } else {
-                                        state.value.startingDate
+                            if (checkNotNull(savedStateHandle["isDuplicate"])) {
+                                addEventUseCases.addEvent(
+                                    CalendarEventDto(
+                                        id = 0,
+                                        startingDate = if (state.value.isTakingWholeDay) {
+                                            addEventUseCases.getStartOfDay(state.value.startingDate)
+                                        } else {
+                                            state.value.startingDate
 
-                                    },
-                                    endingDate = if (state.value.isTakingWholeDay) {
-                                        addEventUseCases.getStartOfDay(state.value.endingDate)
-                                    } else {
-                                        state.value.endingDate
+                                        },
+                                        endingDate = if (state.value.isTakingWholeDay) {
+                                            addEventUseCases.getStartOfDay(state.value.endingDate)
+                                        } else {
+                                            state.value.endingDate
 
-                                    },
-                                    isTakingWholeDay = state.value.isTakingWholeDay,
-                                    isRepeating = state.value.isRepeating,
-                                    repeatMode = state.value.repeatMode,
-                                    title = state.value.title,
-                                    description = state.value.description,
-                                    color = state.value.color,
-                                    reminderMode = state.value.reminderMode
+                                        },
+                                        isTakingWholeDay = state.value.isTakingWholeDay,
+                                        isRepeating = state.value.isRepeating,
+                                        repeatMode = state.value.repeatMode,
+                                        title = state.value.title,
+                                        description = state.value.description,
+                                        color = state.value.color,
+                                        reminderMode = state.value.reminderMode
+                                    )
                                 )
-                            )
+                            } else {
+                                addEventUseCases.updateCalendarEvent(
+                                    CalendarEventDto(
+                                        id = checkNotNull(savedStateHandle["eventId"]),
+                                        startingDate = if (state.value.isTakingWholeDay) {
+                                            addEventUseCases.getStartOfDay(state.value.startingDate)
+                                        } else {
+                                            state.value.startingDate
+
+                                        },
+                                        endingDate = if (state.value.isTakingWholeDay) {
+                                            addEventUseCases.getStartOfDay(state.value.endingDate)
+                                        } else {
+                                            state.value.endingDate
+
+                                        },
+                                        isTakingWholeDay = state.value.isTakingWholeDay,
+                                        isRepeating = state.value.isRepeating,
+                                        repeatMode = state.value.repeatMode,
+                                        title = state.value.title,
+                                        description = state.value.description,
+                                        color = state.value.color,
+                                        reminderMode = state.value.reminderMode
+                                    )
+                                )
+                            }
                         } else {
                             addEventUseCases.addEvent(
                                 CalendarEventDto(

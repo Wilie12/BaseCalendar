@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
                             MainScreenRoot(navController = navController)
                         }
                         composable(
-                            route = Screen.AddEventScreen.route + "/{screen}?eventId={eventId}",
+                            route = Screen.AddEventScreen.route + "/{screen}?eventId={eventId}&isDuplicate={isDuplicate}",
                             arguments = listOf(
                                 navArgument(name = "screen") {
                                     type = NavType.StringType
@@ -49,6 +49,10 @@ class MainActivity : ComponentActivity() {
                                 navArgument(name = "eventId") {
                                     type = NavType.IntType
                                     defaultValue = 0
+                                },
+                                navArgument(name = "isDuplicate") {
+                                    type = NavType.BoolType
+                                    defaultValue = false
                                 }
                             )
                         ) {

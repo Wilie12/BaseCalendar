@@ -24,6 +24,16 @@ class EventViewModel @Inject constructor(
         setScreenRoute(checkNotNull(savedStateHandle["screen"]))
     }
 
+    fun onEvent(event: EventEvent) {
+        when (event) {
+            EventEvent.DeleteEvent -> {
+                viewModelScope.launch {
+                    eventUseCases.deleteCalendarEvent(state.value.event)
+                }
+            }
+        }
+    }
+
     private fun getCalendarEvent(eventId: Int) {
         viewModelScope.launch {
             _state.value = state.value.copy(isLoading = true)

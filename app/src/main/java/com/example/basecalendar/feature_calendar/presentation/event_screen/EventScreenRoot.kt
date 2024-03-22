@@ -11,5 +11,11 @@ fun EventScreenRoot(
 ) {
     val viewModel = hiltViewModel<EventViewModel>()
 
-    EventScreen(state = viewModel.state.value, navController = navController)
+    EventScreen(
+        state = viewModel.state.value,
+        onEvent = {
+            viewModel.onEvent(it)
+        },
+        navController = navController
+    )
 }

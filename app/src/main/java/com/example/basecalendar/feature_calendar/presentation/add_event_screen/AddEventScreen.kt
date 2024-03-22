@@ -25,6 +25,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -288,7 +289,9 @@ fun AddEventScreen(
                         disabledContainerColor = Color.Transparent,
                         focusedContainerColor = Color.Transparent,
                         unfocusedContainerColor = Color.Transparent,
-                        focusedLabelColor = Color.Transparent
+                        focusedLabelColor = Color.Transparent,
+                        unfocusedLabelColor = if (state.title.isNotEmpty()) Color.Transparent else MaterialTheme.colorScheme.onSurfaceVariant,
+                        disabledLabelColor = if (state.title.isNotEmpty()) Color.Transparent else MaterialTheme.colorScheme.onSurfaceVariant
                     ),
                     textStyle = TextStyle(
                         fontSize = 20.sp
@@ -463,7 +466,9 @@ fun AddEventScreen(
                             focusedLabelColor = Color.Transparent,
                             disabledIndicatorColor = Color.Transparent,
                             focusedIndicatorColor = Color.Transparent,
-                            unfocusedIndicatorColor = Color.Transparent
+                            unfocusedIndicatorColor = Color.Transparent,
+                            unfocusedLabelColor = if (state.title.isNotEmpty()) Color.Transparent else MaterialTheme.colorScheme.onSurfaceVariant,
+                            disabledLabelColor = if (state.title.isNotEmpty()) Color.Transparent else MaterialTheme.colorScheme.onSurfaceVariant
                         ),
                         label = {
                             Text(
