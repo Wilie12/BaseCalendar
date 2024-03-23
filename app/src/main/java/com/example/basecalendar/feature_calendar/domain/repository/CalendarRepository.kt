@@ -4,7 +4,7 @@ import com.example.basecalendar.feature_calendar.data.local_data_source.dto.Cale
 
 interface CalendarRepository {
 
-    suspend fun insertCalendarEvent(calendarEventDto: CalendarEventDto)
+    suspend fun insertCalendarEvent(calendarEventDto: CalendarEventDto): Long
 
     suspend fun getAllCalendarEventsFromCurrentMonth(
         firstDayOfMonth: Long,

@@ -9,8 +9,8 @@ class CalendarRepositoryImpl(
     private val calendarDao: CalendarDao
 ): CalendarRepository {
 
-    override suspend fun insertCalendarEvent(calendarEventDto: CalendarEventDto) {
-        calendarDao.insertCalendarEvent(calendarEventDto)
+    override suspend fun insertCalendarEvent(calendarEventDto: CalendarEventDto): Long {
+        return calendarDao.insertCalendarEvent(calendarEventDto)
     }
 
     override suspend fun getAllCalendarEventsFromCurrentMonth(

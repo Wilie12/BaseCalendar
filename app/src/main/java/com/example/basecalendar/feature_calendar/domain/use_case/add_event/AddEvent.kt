@@ -7,7 +7,7 @@ class AddEvent(
     private val repository: CalendarRepository
 ) {
 
-    suspend operator fun invoke(event: CalendarEventDto) {
-        repository.insertCalendarEvent(event)
+    suspend operator fun invoke(event: CalendarEventDto): Long {
+        return repository.insertCalendarEvent(event)
     }
 }

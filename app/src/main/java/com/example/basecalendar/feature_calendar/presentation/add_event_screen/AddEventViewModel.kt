@@ -152,9 +152,10 @@ class AddEventViewModel @Inject constructor(
             AddEventEvent.SaveEvent -> {
                 viewModelScope.launch {
                     if (state.value.endingDate > state.value.startingDate || state.value.isTakingWholeDay) {
+                        val eventId: Long
                         if (checkNotNull(savedStateHandle["eventId"]) != 0) {
                             if (checkNotNull(savedStateHandle["isDuplicate"])) {
-                                addEventUseCases.addEvent(
+                                eventId = addEventUseCases.addEvent(
                                     CalendarEventDto(
                                         id = 0,
                                         startingDate = if (state.value.isTakingWholeDay) {
@@ -179,6 +180,7 @@ class AddEventViewModel @Inject constructor(
                                     )
                                 )
                             } else {
+                                eventId = checkNotNull(savedStateHandle["eventId"])
                                 addEventUseCases.updateCalendarEvent(
                                     CalendarEventDto(
                                         id = checkNotNull(savedStateHandle["eventId"]),
@@ -205,7 +207,7 @@ class AddEventViewModel @Inject constructor(
                                 )
                             }
                         } else {
-                            addEventUseCases.addEvent(
+                            eventId = addEventUseCases.addEvent(
                                 CalendarEventDto(
                                     id = 0,
                                     startingDate = if (state.value.isTakingWholeDay) {
@@ -233,6 +235,7 @@ class AddEventViewModel @Inject constructor(
                         if (state.value.reminderMode != ReminderMode.NONE) {
                             scheduleAlarmItem(
                                 AlarmItem(
+                                    id = eventId,
                                     time = state.value.startingDate,
                                     title = state.value.title,
                                     reminderMode = state.value.reminderMode

@@ -11,7 +11,7 @@ import com.example.basecalendar.feature_calendar.data.local_data_source.dto.Cale
 interface CalendarDao {
 
     @Insert
-    suspend fun insertCalendarEvent(calendarEventDto: CalendarEventDto)
+    suspend fun insertCalendarEvent(calendarEventDto: CalendarEventDto): Long
 
     @Delete
     suspend fun deleteCalendarEvent(calendarEventDto: CalendarEventDto)

@@ -39,6 +39,7 @@ class AlarmService: Service() {
             listOfEvents.forEach { calendarEvent ->
                 if (calendarEvent.reminderMode != ReminderMode.NONE && calendarEvent.startingDate > System.currentTimeMillis()) {
                     val alarmItem = AlarmItem(
+                        id = calendarEvent.id.toLong(),
                         time = calendarEvent.startingDate,
                         title = calendarEvent.title,
                         reminderMode = calendarEvent.reminderMode

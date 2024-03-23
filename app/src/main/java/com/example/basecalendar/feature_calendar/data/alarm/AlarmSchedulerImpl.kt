@@ -19,6 +19,7 @@ class AlarmSchedulerImpl(
             putExtra("EXTRA_MESSAGE", item.title)
             putExtra("EXTRA_TIME", item.time)
             putExtra("EXTRA_REMINDER_MODE", item.reminderMode)
+            putExtra("EXTRA_ID", item.id)
         }
 
         alarmManager.setAndAllowWhileIdle(

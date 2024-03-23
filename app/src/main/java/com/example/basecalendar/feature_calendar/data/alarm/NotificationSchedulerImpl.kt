@@ -16,15 +16,13 @@ class NotificationSchedulerImpl(
     private val context: Context
 ): NotificationScheduler {
 
-    // TODO - add intent to event screen
-
     private val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
     override fun showNotification(item: AlarmItem) {
 
         val intent = Intent(
             Intent.ACTION_VIEW,
-            Uri.parse("base_calendar://event_screen/22/main_screen"),
+            Uri.parse("base_calendar://event_screen/${item.id}/main_screen"),
             context,
             MainActivity::class.java
         )
