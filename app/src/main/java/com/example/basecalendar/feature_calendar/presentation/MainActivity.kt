@@ -1,5 +1,6 @@
 package com.example.basecalendar.feature_calendar.presentation
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -12,6 +13,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
+import com.example.basecalendar.feature_calendar.data.util.Constants
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.AddEventScreenRoot
 import com.example.basecalendar.feature_calendar.presentation.day_screen.DayScreenRoot
 import com.example.basecalendar.feature_calendar.presentation.event_screen.EventScreenRoot
@@ -77,6 +80,11 @@ class MainActivity : ComponentActivity() {
                                 },
                                 navArgument(name = "screen") {
                                     type = NavType.StringType
+                                }
+                            ),
+                            deepLinks = listOf(
+                                navDeepLink {
+                                    uriPattern = Constants.uri + "/{eventId}/{screen}"
                                 }
                             )
                         ) {

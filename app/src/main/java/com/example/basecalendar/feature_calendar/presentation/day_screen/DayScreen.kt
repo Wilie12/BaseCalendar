@@ -286,7 +286,7 @@ fun DayScreen(
                             }
                             if (state.selectedDate == state.currentDate) {
                                 Divider(
-                                    color = MaterialTheme.colorScheme.primary,
+                                    color = MaterialTheme.colorScheme.onSurface,
                                     thickness = 2.dp,
                                     modifier = Modifier
                                         .fillMaxWidth()

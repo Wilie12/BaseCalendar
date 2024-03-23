@@ -8,6 +8,8 @@ import com.example.basecalendar.feature_calendar.util.navigation.Screen
 
 object Constants {
 
+    const val uri = "base_calendar://event_screen"
+
     val red = Color(0xFFF44336).toArgb()
     val pink = Color(0xFFE91E63).toArgb()
     val purple = Color(0xFF673AB7).toArgb()

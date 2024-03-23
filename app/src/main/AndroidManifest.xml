@@ -26,6 +26,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <data android:host="event_screen"
+                    android:scheme="base_calendar"/>
+            </intent-filter>
         </activity>
         <service android:name=".feature_calendar.data.alarm.AlarmService" />
         <receiver android:name=".feature_calendar.data.alarm.AlarmReceiver" />

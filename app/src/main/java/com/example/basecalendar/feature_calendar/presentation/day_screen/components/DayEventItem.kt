@@ -21,7 +21,6 @@ fun DayEventItem(
     modifier: Modifier = Modifier,
     onEventNavigate: (Int) -> Unit
 ) {
-    // TODO - design event
     val c = Calendar.getInstance()
 
     c.timeInMillis = calendarEventDto.startingDate

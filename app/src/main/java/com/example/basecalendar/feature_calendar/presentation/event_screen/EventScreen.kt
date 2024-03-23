@@ -40,7 +40,6 @@ import com.example.basecalendar.feature_calendar.util.navigation.Screen
 import com.example.basecalendar.feature_calendar.util.parsers.parseReminderModeIntToName
 import com.example.basecalendar.feature_calendar.util.parsers.parseRepeatModeIntToString
 
-// TODO
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EventScreen(
