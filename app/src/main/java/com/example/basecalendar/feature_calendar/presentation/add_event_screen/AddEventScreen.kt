@@ -61,6 +61,7 @@ import com.example.basecalendar.feature_calendar.presentation.add_event_screen.c
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.components.TimePickerDialog
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.components.TimeText
 import com.example.basecalendar.feature_calendar.util.findActivity
+import com.example.basecalendar.feature_calendar.util.navigation.Screen
 import com.example.basecalendar.feature_calendar.util.openAppSettings
 import com.example.basecalendar.feature_calendar.util.parsers.parseColorIntToString
 import com.example.basecalendar.feature_calendar.util.parsers.parseReminderModeIntToName
@@ -256,7 +257,7 @@ fun AddEventScreen(
                         if (state.title.isNotEmpty()) {
                             onEvent(AddEventEvent.SaveEvent)
                             navController.navigate(state.screenRoute) {
-                                popUpTo(state.screenRoute) {
+                                popUpTo(Screen.MainScreen.route) {
                                     inclusive = true
                                 }
                             }

@@ -1,8 +1,10 @@
-package com.example.basecalendar.feature_calendar.presentation.add_event_screen.components
+package com.example.basecalendar.feature_calendar.presentation.event_screen.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,20 +18,17 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun PermissionDialog(
-    isPermanentlyDeclined: Boolean,
+fun ConfirmDialog(
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
-    onGoToAppSettingsClick: () -> Unit,
     content: @Composable () -> Unit
 ) {
-    Dialog(onDismissRequest = onDismiss,) {
+    Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = MaterialTheme.shapes.extraLarge,
             tonalElevation = 6.dp,
@@ -46,7 +45,7 @@ fun PermissionDialog(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Permission required",
+                    text = "Delete event?",
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -55,19 +54,18 @@ fun PermissionDialog(
                 content()
                 Spacer(modifier = Modifier.height(10.dp))
                 Divider()
-                TextButton(onClick = {
-                    if (isPermanentlyDeclined) {
-                        onGoToAppSettingsClick()
-                    } else {
-                        onConfirm()
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    TextButton(onClick = onDismiss) {
+                        Text(text = "Cancel")
                     }
-                }) {
-                    Text(
-                        text = if (isPermanentlyDeclined) "Grant permission" else "OK",
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
+                    TextButton(onClick = onConfirm) {
+                        Text(text = "Delete")
+                    }
                 }
+
             }
         }
     }
@@ -75,16 +73,11 @@ fun PermissionDialog(
 
 @Preview
 @Composable
-fun PermissionDialogPreview() {
-    PermissionDialog(
-        isPermanentlyDeclined = true,
+fun ConfirmDialogPreview() {
+    ConfirmDialog(
         onDismiss = {},
-        onConfirm = {},
-        onGoToAppSettingsClick = {}
+        onConfirm = {}
     ) {
-        Text(
-            text = "This app needs permission to send you notifications " +
-                    "so you won't forget about upcoming events."
-        )
+        Text(text = "Are you sure you want to delete this event?")
     }
 }

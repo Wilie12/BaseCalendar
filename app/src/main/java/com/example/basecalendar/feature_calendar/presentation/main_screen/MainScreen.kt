@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -172,53 +174,40 @@ fun MainScreen(
                     }
                 }
                 Divider(modifier = Modifier.fillMaxWidth())
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(7),
-                    modifier = Modifier.fillMaxHeight(),
-                    verticalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    itemsIndexed(state.listOfDays) { index, item ->
-                        CalendarDayItem(
-                            calendarDay = item,
-                            isCurrentDay = item.dayOfMonth == state.currentDate.day &&
-                                    state.currentDate.year == state.selectedDate.year &&
-                                    state.currentDate.month == state.selectedDate.month,
-                            onDayNavigate = { day ->
-                                navController.navigate(Screen.DayScreen.route + "?day=$day")
-                            },
-                            onEventNavigate = { eventId ->
-                                navController.navigate(Screen.EventScreen.route + "/$eventId/${Screen.MainScreen.route}")
+                Box(modifier = Modifier.fillMaxWidth()) {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(7),
+                        modifier = Modifier.fillMaxHeight(),
+                        verticalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        itemsIndexed(state.listOfDays) { index, item ->
+                            CalendarDayItem(
+                                calendarDay = item,
+                                isCurrentDay = item.dayOfMonth == state.currentDate.day &&
+                                        state.currentDate.year == state.selectedDate.year &&
+                                        state.currentDate.month == state.selectedDate.month,
+                                onDayNavigate = { day ->
+                                    navController.navigate(Screen.DayScreen.route + "?day=$day")
+                                },
+                                onEventNavigate = { eventId ->
+                                    navController.navigate(Screen.EventScreen.route + "/$eventId/${Screen.MainScreen.route}")
+                                }
+                            )
+                            if (index > 6) {
+                                Divider(modifier = Modifier.fillMaxWidth())
                             }
-                        )
-                        if (index > 6) {
-                            Divider(modifier = Modifier.fillMaxWidth())
                         }
-//                            TODO - check why height is changing
-//                        Row(
-//                            modifier = Modifier
-//                                .height(IntrinsicSize.Max)
-//                        ) {
-//                            Divider(
-//                                modifier = Modifier
-//                                    .width(1.dp)
-//                                    .fillMaxHeight()
-//                            )
-//                            Column {
-//                                CalendarDayItem(
-//                                    calendarDay = item,
-//                                    isCurrentDay = item.dayOfMonth == state.currentDate.day &&
-//                                            state.currentDate.year == state.selectedDate.year &&
-//                                            state.currentDate.month == state.selectedDate.month
-//                                )
-//                                Divider(modifier = Modifier.fillMaxWidth())
-//                            }
-//                            TODO - check why width of divider is set to 0.dp
-//                            Divider(
-//                                modifier = Modifier
-//                                    .width(1.dp)
-//                                    .fillMaxHeight()
-//                            )
-//                        }
+                    }
+                    Row {
+                        for (i in 1..6) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            Divider(
+                                modifier = Modifier
+                                    .width(1.dp)
+                                    .fillMaxHeight()
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
                     }
                 }
             }

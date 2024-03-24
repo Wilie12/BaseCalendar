@@ -33,7 +33,7 @@ fun CalendarDayItem(
                     .fillMaxWidth()
                     .padding(8.dp)
             )
-            for(i in 1..5) {
+            for (i in 1..5) {
                 Text(
                     text = "",
                     fontSize = 14.sp
@@ -60,22 +60,51 @@ fun CalendarDayItem(
             )
             if (calendarDay.listOfEvents.isNotEmpty()) {
                 Column {
-                    calendarDay.listOfEvents.forEach { event ->
-                        Text(
-                            text = event.title,
-                            maxLines = 1,
-                            textAlign = TextAlign.Center,
-                            fontSize = 14.sp,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(
-                                    color = Color(event.color),
-                                    shape = CircleShape
+                    calendarDay.listOfEvents.forEachIndexed { index, event ->
+                        if (index < 5) {
+                            if (index != 4) {
+                                Text(
+                                    text = event.title,
+                                    maxLines = 1,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 14.sp,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(
+                                            color = Color(event.color),
+                                            shape = CircleShape
+                                        )
+                                        .clickable {
+                                            onEventNavigate(event.id)
+                                        }
                                 )
-                                .clickable {
-                                    onEventNavigate(event.id)
+                            } else {
+                                if (calendarDay.listOfEvents.size > 5) {
+                                    Text(
+                                        text = "...",
+                                        fontSize = 14.sp,
+                                        textAlign = TextAlign.Center,
+                                        modifier = Modifier.fillMaxWidth()
+                                    )
+                                } else {
+                                    Text(
+                                        text = event.title,
+                                        maxLines = 1,
+                                        textAlign = TextAlign.Center,
+                                        fontSize = 14.sp,
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(
+                                                color = Color(event.color),
+                                                shape = CircleShape
+                                            )
+                                            .clickable {
+                                                onEventNavigate(event.id)
+                                            }
+                                    )
                                 }
-                        )
+                            }
+                        }
                     }
                     for (i in 1..(5 - calendarDay.listOfEvents.size)) {
                         Text(
@@ -86,7 +115,7 @@ fun CalendarDayItem(
                 }
             } else {
                 Column {
-                    for(i in 1..5) {
+                    for (i in 1..5) {
                         Text(
                             text = "",
                             fontSize = 14.sp

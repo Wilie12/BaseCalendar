@@ -20,6 +20,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +37,7 @@ import com.example.basecalendar.feature_calendar.data.util.ReminderMode
 import com.example.basecalendar.feature_calendar.data.util.RepeatMode
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.components.DateText
 import com.example.basecalendar.feature_calendar.presentation.add_event_screen.components.TimeText
+import com.example.basecalendar.feature_calendar.presentation.event_screen.composables.ConfirmDialog
 import com.example.basecalendar.feature_calendar.util.navigation.Screen
 import com.example.basecalendar.feature_calendar.util.parsers.parseReminderModeIntToName
 import com.example.basecalendar.feature_calendar.util.parsers.parseRepeatModeIntToString
@@ -49,6 +51,24 @@ fun EventScreen(
 ) {
 
     val showMenu = remember { mutableStateOf(false) }
+    val showConfirmDialog = rememberSaveable { mutableStateOf(false) }
+
+    if (showConfirmDialog.value) {
+        ConfirmDialog(
+            onDismiss = { showConfirmDialog.value = false },
+            onConfirm = {
+                onEvent(EventEvent.DeleteEvent)
+                showConfirmDialog.value = false
+                navController.navigate(state.screenRoute) {
+                    popUpTo(Screen.MainScreen.route) {
+                        inclusive = true
+                    }
+                }
+            }
+        ) {
+            Text(text = "Are you sure you want do delete this event?")
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -71,6 +91,7 @@ fun EventScreen(
                             contentDescription = "Edit"
                         )
                     }
+                    // TODO - Add confirm delete dialog
                     Box {
                         IconButton(onClick = {
                             showMenu.value = !showMenu.value
@@ -89,12 +110,7 @@ fun EventScreen(
                                     Text(text = "Delete")
                                 },
                                 onClick = {
-                                    onEvent(EventEvent.DeleteEvent)
-                                    navController.navigate(state.screenRoute) {
-                                        popUpTo(state.screenRoute) {
-                                            inclusive = true
-                                        }
-                                    }
+                                    showConfirmDialog.value = true
                                 }
                             )
                             DropdownMenuItem(

@@ -267,10 +267,7 @@ fun DayScreen(
                                 }
                             }
                             Row {
-                                Box(
-                                    modifier = Modifier
-                                        .width(50.dp)
-                                )
+                                Spacer(modifier = Modifier.width(50.dp))
                                 state.listOfEventsFromCurrentDay.forEach {
                                     if (!(it.isTakingWholeDay)) {
                                         DayEventItem(
@@ -292,7 +289,9 @@ fun DayScreen(
                                         .fillMaxWidth()
                                         .padding(
                                             start = 50.dp,
-                                            top = (60.dp * (state.currentHour + state.currentMinutes.toFloat().div(60)))
+                                            top = (60.dp * (state.currentHour + state.currentMinutes
+                                                .toFloat()
+                                                .div(60)))
                                         )
                                 )
                             }
