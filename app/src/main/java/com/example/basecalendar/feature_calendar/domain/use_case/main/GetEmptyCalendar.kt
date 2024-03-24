@@ -18,6 +18,9 @@ class GetEmptyCalendar {
         val firstDayOfMonthInWeek = c.get(Calendar.DAY_OF_WEEK)
         val daysInMonth = c.getActualMaximum(Calendar.DAY_OF_MONTH)
 
+        c.set(Calendar.DAY_OF_MONTH, daysInMonth)
+        val lastDayOfMonthInWeek = c.get(Calendar.DAY_OF_WEEK)
+
         var day = 1
 
         val listOfDays = mutableListOf<CalendarDay>()
@@ -50,6 +53,17 @@ class GetEmptyCalendar {
                 )
             )
             day++
+        }
+        if (lastDayOfMonthInWeek > 1) {
+            for (i in 1..8 - lastDayOfMonthInWeek) {
+                listOfDays.add(
+                    CalendarDay(
+                        listOfEvents = emptyList(),
+                        isEmpty = true,
+                        dayOfMonth = -1
+                    )
+                )
+            }
         }
 
         return listOfDays.toList()
