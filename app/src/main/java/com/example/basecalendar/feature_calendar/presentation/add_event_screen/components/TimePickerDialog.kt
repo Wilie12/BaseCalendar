@@ -63,14 +63,10 @@ fun TimePickerDialog(
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
                     TextButton(
-                        onClick = {
-                            onCancel()
-                        }
+                        onClick = onCancel
                     ) { Text("Cancel") }
                     TextButton(
-                        onClick = {
-                            onConfirm()
-                        }
+                        onClick = onConfirm
                     ) { Text("OK") }
                 }
             }

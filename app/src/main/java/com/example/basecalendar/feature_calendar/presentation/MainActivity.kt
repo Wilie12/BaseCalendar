@@ -26,8 +26,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // TODO - rebuild whole app to make navigationDrawer in MainActivity
-        // TODO - think about adding tasks database
         setContent {
             BaseCalendarTheme {
                 Surface(

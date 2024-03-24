@@ -1,9 +1,6 @@
 package com.example.basecalendar.feature_calendar.presentation.event_screen
 
 import com.example.basecalendar.feature_calendar.data.local_data_source.dto.CalendarEventDto
-import com.example.basecalendar.feature_calendar.data.util.Constants
-import com.example.basecalendar.feature_calendar.data.util.ReminderMode
-import com.example.basecalendar.feature_calendar.data.util.RepeatMode
 
 data class EventState(
     val event: CalendarEventDto = CalendarEventDto(

@@ -30,7 +30,7 @@ fun RadioOptionsDialog(
     onDismiss: () -> Unit
 ) {
     Dialog(
-        onDismissRequest = { onDismiss() }
+        onDismissRequest = onDismiss
     ) {
         Surface(
             shape = MaterialTheme.shapes.extraLarge,

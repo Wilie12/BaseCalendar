@@ -1,7 +1,6 @@
 package com.example.basecalendar.di
 
 import android.app.Application
-import androidx.room.PrimaryKey
 import androidx.room.Room
 import com.example.basecalendar.feature_calendar.data.alarm.AlarmScheduler
 import com.example.basecalendar.feature_calendar.data.alarm.AlarmSchedulerImpl

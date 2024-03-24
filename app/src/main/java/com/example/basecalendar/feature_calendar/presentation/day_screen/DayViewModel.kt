@@ -133,7 +133,7 @@ class DayViewModel @Inject constructor(
                 val c = Calendar.getInstance()
 
                 var nextDay = state.value.selectedDate.day + 1
-                var nextMonth = state.value.selectedDate.month + 1
+                val nextMonth = state.value.selectedDate.month + 1
                 val nextYear = state.value.selectedDate.year + 1
 
                 var selectedMonth = state.value.selectedDate.month
@@ -144,8 +144,7 @@ class DayViewModel @Inject constructor(
 
                 if (nextDay > c.getActualMaximum(Calendar.DAY_OF_MONTH)) {
                     if (nextMonth > Calendar.DECEMBER) {
-                        nextMonth = Calendar.JANUARY
-                        selectedMonth = nextMonth
+                        selectedMonth = Calendar.JANUARY
                         selectedYear = nextYear
                         c.set(Calendar.MONTH, selectedMonth)
                         c.set(Calendar.YEAR, selectedYear)

@@ -91,7 +91,6 @@ fun EventScreen(
                             contentDescription = "Edit"
                         )
                     }
-                    // TODO - Add confirm delete dialog
                     Box {
                         IconButton(onClick = {
                             showMenu.value = !showMenu.value
