@@ -46,10 +46,12 @@ class MainViewModel @Inject constructor(
                         )
                     }
                 } else if (state.value.currentDate.month != state.value.selectedDate.month) {
-                    setFullCalendarForSelectedMonth(
-                        selectedMonth = state.value.currentDate.month,
-                        selectedYear = state.value.currentDate.year
-                    )
+                    viewModelScope.launch {
+                        setFullCalendarForSelectedMonth(
+                            selectedMonth = state.value.currentDate.month,
+                            selectedYear = state.value.currentDate.year
+                        )
+                    }
                 }
             }
 
@@ -75,10 +77,12 @@ class MainViewModel @Inject constructor(
                         )
                     }
                 } else {
-                    setFullCalendarForSelectedMonth(
-                        selectedMonth = selectedMonth,
-                        selectedYear = selectedYear
-                    )
+                    viewModelScope.launch {
+                        setFullCalendarForSelectedMonth(
+                            selectedMonth = selectedMonth,
+                            selectedYear = selectedYear
+                        )
+                    }
                 }
             }
 
@@ -105,10 +109,12 @@ class MainViewModel @Inject constructor(
                         )
                     }
                 } else {
-                    setFullCalendarForSelectedMonth(
-                        selectedMonth = selectedMonth,
-                        selectedYear = selectedYear
-                    )
+                    viewModelScope.launch {
+                        setFullCalendarForSelectedMonth(
+                            selectedMonth = selectedMonth,
+                            selectedYear = selectedYear
+                        )
+                    }
                 }
             }
         }

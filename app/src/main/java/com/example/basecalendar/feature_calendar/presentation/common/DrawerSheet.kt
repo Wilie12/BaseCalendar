@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun DrawerSheet(
     navController: NavController,
+    screen: String,
     selectedItemIndex: Int,
     scope: CoroutineScope,
     state: DrawerState,
@@ -36,7 +37,11 @@ fun DrawerSheet(
                 label = { Text(text = navigationItem.title) },
                 selected = (index == selectedItemIndex),
                 onClick = {
-                    navController.navigate(navigationItem.route)
+                    navController.navigate(navigationItem.route) {
+                        popUpTo(screen) {
+                            inclusive = true
+                        }
+                    }
                     onChange(index)
                     scope.launch {
                         state.close()
