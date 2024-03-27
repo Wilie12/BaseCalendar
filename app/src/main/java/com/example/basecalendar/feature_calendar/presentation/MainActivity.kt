@@ -3,6 +3,12 @@ package com.example.basecalendar.feature_calendar.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -54,7 +60,25 @@ class MainActivity : ComponentActivity() {
                                     type = NavType.BoolType
                                     defaultValue = false
                                 }
-                            )
+                            ),
+                            enterTransition = {
+                                slideInVertically(
+                                    animationSpec = tween(
+                                        durationMillis = 300,
+                                        easing = LinearEasing
+                                    ),
+                                    initialOffsetY = { it / 2 }
+                                )
+                            },
+                            exitTransition = {
+                                slideOutVertically(
+                                    animationSpec = tween(
+                                        durationMillis = 300,
+                                        easing = LinearEasing
+                                    ),
+                                    targetOffsetY = { it / 2 }
+                                )
+                            }
                         ) {
                             AddEventScreenRoot(navController = navController)
                         }
@@ -83,7 +107,23 @@ class MainActivity : ComponentActivity() {
                                 navDeepLink {
                                     uriPattern = Constants.uri + "/{eventId}/{screen}"
                                 }
-                            )
+                            ),
+                            enterTransition = {
+                                scaleIn(
+                                    animationSpec = tween(
+                                        durationMillis = 300,
+                                        easing = LinearEasing
+                                    )
+                                )
+                            },
+                            exitTransition = {
+                                scaleOut(
+                                    animationSpec = tween(
+                                        durationMillis = 300,
+                                        easing = LinearEasing
+                                    )
+                                )
+                            }
                         ) {
                             EventScreenRoot(navController = navController)
                         }
@@ -91,6 +131,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
     }
 }

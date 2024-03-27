@@ -4,7 +4,6 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.example.basecalendar.feature_calendar.util.parsers.parseReminderModeIntToLongValue
 
 class AlarmSchedulerImpl(
@@ -32,7 +31,6 @@ class AlarmSchedulerImpl(
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         )
-        Log.d("ALARM_SCHEDULER", "Item scheduled: ${item.title}, ${item.time}")
     }
 
     override fun cancel(item: AlarmItem) {

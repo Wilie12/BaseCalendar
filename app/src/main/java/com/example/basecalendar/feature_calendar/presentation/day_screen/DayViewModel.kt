@@ -75,10 +75,12 @@ class DayViewModel @Inject constructor(
                             )
                         }
                     } else {
-                        setFullCalendar(
-                            selectedMonth = selectedMonth,
-                            selectedYear = selectedYear
-                        )
+                        viewModelScope.launch {
+                            setFullCalendar(
+                                selectedMonth = selectedMonth,
+                                selectedYear = selectedYear
+                            )
+                        }
                     }
                 }
 
@@ -109,10 +111,12 @@ class DayViewModel @Inject constructor(
                             )
                         }
                     } else {
-                        setFullCalendar(
-                            selectedMonth = state.value.currentDate.month,
-                            selectedYear = state.value.currentDate.year
-                        )
+                        viewModelScope.launch {
+                            setFullCalendar(
+                                selectedMonth = state.value.currentDate.month,
+                                selectedYear = state.value.currentDate.year
+                            )
+                        }
                     }
 
                 }
@@ -170,10 +174,12 @@ class DayViewModel @Inject constructor(
                             )
                         }
                     } else {
-                        setFullCalendar(
-                            selectedMonth = selectedMonth,
-                            selectedYear = selectedYear
-                        )
+                        viewModelScope.launch {
+                            setFullCalendar(
+                                selectedMonth = selectedMonth,
+                                selectedYear = selectedYear
+                            )
+                        }
                     }
                 }
 

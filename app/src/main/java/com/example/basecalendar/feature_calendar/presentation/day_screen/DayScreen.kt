@@ -80,6 +80,7 @@ fun DayScreen(
         drawerContent = {
             DrawerSheet(
                 navController = navController,
+                screen = Screen.DayScreen.route,
                 selectedItemIndex = selectedItemIndex,
                 scope = scope,
                 state = drawerState

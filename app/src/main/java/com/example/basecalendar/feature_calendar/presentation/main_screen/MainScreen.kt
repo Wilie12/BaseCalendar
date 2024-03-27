@@ -68,6 +68,7 @@ fun MainScreen(
         drawerContent = {
             DrawerSheet(
                 navController = navController,
+                screen = Screen.MainScreen.route,
                 selectedItemIndex = selectedItemIndex.intValue,
                 scope = scope,
                 state = drawerState

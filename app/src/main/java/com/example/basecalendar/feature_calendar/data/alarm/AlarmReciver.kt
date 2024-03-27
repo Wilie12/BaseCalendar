@@ -17,7 +17,6 @@ class AlarmReceiver: BroadcastReceiver() {
         val time = intent.getLongExtra("EXTRA_TIME", 0)
         val reminderMode = intent.getIntExtra("EXTRA_REMINDER_MODE", 0)
         val id = intent.getLongExtra("EXTRA_ID", 0L)
-        println("ALARM_RECEIVED: $message")
         if (System.currentTimeMillis() < time && id != 0L) {
             notificationScheduler.showNotification(
                 AlarmItem(
