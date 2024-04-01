@@ -29,8 +29,12 @@ class AddEventViewModel @Inject constructor(
     lateinit var alarmScheduler: AlarmScheduler
 
     init {
-        getCurrentStartingAndEndingDate()
         setStateScreenRoute(checkNotNull(savedStateHandle["screen"]))
+        setStartingAndEndingDate(
+            initialDay = checkNotNull(savedStateHandle["day"]),
+            initialMonth = checkNotNull(savedStateHandle["month"]),
+            initialYear = checkNotNull(savedStateHandle["year"]),
+        )
         if (checkNotNull(savedStateHandle["eventId"]) != 0) {
             getCalendarEventById(checkNotNull(savedStateHandle["eventId"]))
         }
@@ -252,6 +256,27 @@ class AddEventViewModel @Inject constructor(
         _state.value = state.value.copy(
             screenRoute = route
         )
+    }
+
+    private fun setStartingAndEndingDate(
+        initialDay: Int = -1,
+        initialMonth: Int = -1,
+        initialYear: Int = -1,
+    ) {
+        val c = Calendar.getInstance()
+
+        if (initialDay != -1) c.set(Calendar.DAY_OF_MONTH, initialDay)
+        if (initialMonth != -1) c.set(Calendar.MONTH, initialMonth)
+        if (initialYear != -1) c.set(Calendar.YEAR, initialYear)
+
+        if (initialDay == -1 && initialMonth == -1 && initialYear == -1) {
+            getCurrentStartingAndEndingDate()
+        } else {
+            _state.value = state.value.copy(
+                startingDate = c.timeInMillis,
+                endingDate = c.timeInMillis + 3600000
+            )
+        }
     }
 
     private fun getCurrentStartingAndEndingDate() {

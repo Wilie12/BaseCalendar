@@ -43,6 +43,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -128,6 +129,7 @@ fun DayScreen(
                                     color = MaterialTheme.colorScheme.primary,
                                     shape = RoundedCornerShape(10.dp)
                                 )
+                                .clip(shape = RoundedCornerShape(10.dp))
                                 .clickable {
                                     onEvent(DayEvent.CurrentDay)
                                 }
@@ -160,7 +162,10 @@ fun DayScreen(
             floatingActionButton = {
                 FloatingActionButton(onClick = {
                     navController.navigate(
-                        Screen.AddEventScreen.route + "/${Screen.DayScreen.route}"
+                        Screen.AddEventScreen.route + "/${Screen.DayScreen.route}" +
+                                "?month=${state.selectedDate.month}" +
+                                "&year=${state.selectedDate.year}" +
+                                "&day=${state.selectedDate.day}"
                     )
                 }) {
                     Icon(
@@ -231,6 +236,10 @@ fun DayScreen(
                                                 shape = RoundedCornerShape(32.dp),
                                                 color = Color(calendarEvent.color)
                                             )
+                                            .clip(shape = RoundedCornerShape(32.dp))
+                                            .clickable {
+                                                navController.navigate(Screen.EventScreen.route + "/${calendarEvent.id}/${Screen.DayScreen.route}")
+                                            }
                                     )
                                 }
                             }

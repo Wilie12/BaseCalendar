@@ -47,10 +47,22 @@ class MainActivity : ComponentActivity() {
                             MainScreenRoot(navController = navController)
                         }
                         composable(
-                            route = Screen.AddEventScreen.route + "/{screen}?eventId={eventId}&isDuplicate={isDuplicate}",
+                            route = Screen.AddEventScreen.route + "/{screen}?month={month}&year={year}&day={day}&eventId={eventId}&isDuplicate={isDuplicate}",
                             arguments = listOf(
                                 navArgument(name = "screen") {
                                     type = NavType.StringType
+                                },
+                                navArgument(name = "month") {
+                                    type = NavType.IntType
+                                    defaultValue = -1
+                                },
+                                navArgument(name = "year") {
+                                    type = NavType.IntType
+                                    defaultValue = -1
+                                },
+                                navArgument(name = "day") {
+                                    type = NavType.IntType
+                                    defaultValue = -1
                                 },
                                 navArgument(name = "eventId") {
                                     type = NavType.IntType
@@ -83,11 +95,19 @@ class MainActivity : ComponentActivity() {
                             AddEventScreenRoot(navController = navController)
                         }
                         composable(
-                            route = Screen.DayScreen.route + "?day={day}",
+                            route = Screen.DayScreen.route + "?day={day}&month={month}&year={year}",
                             arguments = listOf(
                                 navArgument(name = "day") {
                                     type = NavType.IntType
-                                    defaultValue = 0
+                                    defaultValue = -1
+                                },
+                                navArgument(name = "month") {
+                                    type = NavType.IntType
+                                    defaultValue = -1
+                                },
+                                navArgument(name = "year") {
+                                    type = NavType.IntType
+                                    defaultValue = -1
                                 }
                             )
                         ) {
