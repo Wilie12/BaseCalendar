@@ -38,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -103,6 +104,7 @@ fun MainScreen(
                                     color = MaterialTheme.colorScheme.primary,
                                     shape = RoundedCornerShape(10.dp)
                                 )
+                                .clip(shape = RoundedCornerShape(10.dp))
                                 .clickable {
                                     onEvent(MainEvent.CurrentMonth)
                                 }
@@ -135,7 +137,9 @@ fun MainScreen(
             floatingActionButton = {
                 FloatingActionButton(onClick = {
                     navController.navigate(
-                        Screen.AddEventScreen.route + "/${Screen.MainScreen.route}"
+                        Screen.AddEventScreen.route + "/${Screen.MainScreen.route}" +
+                                "?month=${state.selectedDate.month}" +
+                                "&year=${state.selectedDate.year}"
                     )
                 }) {
                     Icon(
@@ -188,7 +192,10 @@ fun MainScreen(
                                         state.currentDate.year == state.selectedDate.year &&
                                         state.currentDate.month == state.selectedDate.month,
                                 onDayNavigate = { day ->
-                                    navController.navigate(Screen.DayScreen.route + "?day=$day")
+                                    navController.navigate(Screen.DayScreen.route +
+                                            "?day=$day" +
+                                            "&month=${state.selectedDate.month}" +
+                                            "&year=${state.selectedDate.year}")
                                 },
                                 onEventNavigate = { eventId ->
                                     navController.navigate(Screen.EventScreen.route + "/$eventId/${Screen.MainScreen.route}")

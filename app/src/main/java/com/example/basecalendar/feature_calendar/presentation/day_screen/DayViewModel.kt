@@ -22,7 +22,11 @@ class DayViewModel @Inject constructor(
     val state: State<DayState> = _state
 
     init {
-        getCurrentDate(checkNotNull(savedStateHandle["day"]))
+        getCurrentDate(
+            initialDay = checkNotNull(savedStateHandle["day"]),
+            initialMonth = checkNotNull(savedStateHandle["month"]),
+            initialYear = checkNotNull(savedStateHandle["year"])
+        )
         viewModelScope.launch {
             getAllEvents(state.value.selectedDate.year)
             setFullCalendar(
@@ -239,17 +243,22 @@ class DayViewModel @Inject constructor(
     }
 
     private fun getCurrentDate(
-        initialDay: Int = 0
+        initialDay: Int = -1,
+        initialMonth: Int = -1,
+        initialYear: Int = -1
     ) {
         val currentDate = dayUseCases.getCurrentDate()
 
         val c = Calendar.getInstance()
+        if (initialDay != -1) c.set(Calendar.DAY_OF_MONTH, initialDay)
+        if (initialMonth != -1) c.set(Calendar.MONTH, initialMonth)
+        if (initialYear != -1) c.set(Calendar.YEAR, initialYear)
 
         _state.value = state.value.copy(
             selectedDate = CalendarDate(
-                day = if (initialDay != 0) initialDay else currentDate.day,
-                month = currentDate.month,
-                year = currentDate.year
+                day = if (initialDay != -1) initialDay else currentDate.day,
+                month = if (initialMonth != -1) initialMonth else currentDate.month,
+                year = if (initialYear != -1) initialYear else currentDate.year,
             ),
             currentDate = CalendarDate(
                 day = currentDate.day,
